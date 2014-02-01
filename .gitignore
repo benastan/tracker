@@ -1,3 +1,4 @@
+.rspec
 log
 tmp
 config/database.yml
