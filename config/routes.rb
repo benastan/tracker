@@ -1,4 +1,6 @@
 Tracker::Application.routes.draw do
+  mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
   root to: 'stories#index'
   resources :stories, only: [ :new, :create ]
+  resources :story_stories, only: [ :create, :show ]
 end

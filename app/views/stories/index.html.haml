@@ -1,4 +1,24 @@
-- @stories.each do |story|
-  = div_for(story) do
-    %h1
-      = story.title
+= link_to 'New Story', new_story_path
+
+#stories_index
+  - @stories.each do |story|
+    = div_for(story) do
+      %h4
+        = story.title
+
+      .story_tasks
+        %h5 Tasks
+        
+        %ul
+          = content_tag_for(:li, story.child_stories) do |child_story|
+            = child_story.title
+
+          = content_tag_for(:li, story.child_stories.new, class: 'is-hidden')
+
+        = simple_form_for(story.child_story_stories.new, remote: true, format: :json) do |f|
+          %h6 Add a Task
+          = f.hidden_field :parent_story_id
+          = f.input :child_story_id, collection: Story.where.not(id: story.child_stories.pluck(:id).concat([story.id])).pluck(:title, :id), as: :select, prompt: 'Select a Task', label: false
+          = f.submit 'Add Task', data: { :'disable-with' => 'Add Task' }
+          %i.fa-icon.fa-spinner.fa-spin.is-hidden
+          %i.fa-icon.fa-check.is-hidden.showOnSuccess
