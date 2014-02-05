@@ -2,10 +2,7 @@ require 'spec_helper'
 
 feature 'Stories' do
   let!(:parent_story) { create :story, title: 'Parent Story' }
-  let!(:old_child_story) do
-    attrs = attributes_for(:story, title: 'Old Child Story')
-    parent_story.child_stories.create(attrs)
-  end
+  let!(:old_child_story) { create :story, parent_story: parent_story }
   let!(:new_child_story) { create :story, title: 'New Child Story' }
 
   before do
