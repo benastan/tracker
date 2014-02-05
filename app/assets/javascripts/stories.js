@@ -28,7 +28,13 @@ $('#stories_index').each(function() {
     });
   });
   
-  $storiesIndexRoot.sortable();
+  $storiesIndexRoot.sortable({
+    forceHelperSize: false,
+    cursorAt: {
+      left: 50,
+      top: 50
+    }
+  });
 
   $storiesIndexRoot.disableSelection();
 
