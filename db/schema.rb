@@ -11,13 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140201064441) do
+ActiveRecord::Schema.define(version: 20140205030011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "stories", force: true do |t|
     t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "story_order_positions", force: true do |t|
+    t.integer  "story_id"
+    t.integer  "story_order_id"
+    t.integer  "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "story_orders", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
