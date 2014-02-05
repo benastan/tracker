@@ -5,6 +5,36 @@
     padding: 5px 10px;
     border-bottom: 2px solid #f7f7f7;
 
+    &.ui-sortable-helper {
+      $square: 100px;
+      height: $square !important;
+      width: $square !important;
+      line-height: $square;
+      overflow: hidden;
+      border-radius: $square / 2;
+      box-shadow: inset 0px -17px 27px -30px black;
+      text-align: center;
+      vertical-align: center;
+      cursor: -webkit-grabbing;
+      cursor: grabbing;
+
+      > h4 {
+        max-height: 52px;
+        width: 95%;
+        margin: 0 auto;
+        overflow: hidden;
+        position: relative;
+        top: 17px;
+        font-size: 11px;
+        line-height: 1.2;
+        font-weight: 500;
+        color: #bbb;
+        text-transform: uppercase;
+      }
+
+      > .story_tasks { display: none; }
+    }
+
     .edit_story_order_position {
       position: relative;
 
