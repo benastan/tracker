@@ -3,4 +3,5 @@ Tracker::Application.routes.draw do
   root to: 'stories#index'
   resources :stories, only: [ :new, :create ]
   resources :story_stories, only: [ :create, :show ]
+  resources :story_order_positions, only: :update
 end
