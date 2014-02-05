@@ -1,6 +1,6 @@
 class StoriesController < ApplicationController
   def index
-    @stories = Story.all
+    @stories = story_order.stories
   end
 
   def new
@@ -12,7 +12,13 @@ class StoriesController < ApplicationController
     redirect_to :root
   end
 
+  protected
+
   def permitted_params
     params.permit(story: [ :title ])
+  end
+
+  def story_order
+    StoryOrder.first_or_create
   end
 end

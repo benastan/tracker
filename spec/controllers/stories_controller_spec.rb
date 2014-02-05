@@ -7,7 +7,7 @@ describe StoriesController do
   describe '#index' do
     specify do
       get(:index)
-      assigns[:stories].should == Story.all
+      assigns[:stories].should == StoryOrder.first.stories
     end
   end
 
