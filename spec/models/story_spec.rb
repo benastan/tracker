@@ -71,5 +71,11 @@ describe Story do
   describe 'factories' do
     let(:story) { create :story }
     specify { story.title.should be_a String }
+
+    describe 'parent_story' do
+      let(:child_story) { create :story, parent_story: story }
+
+      specify { child_story.parent_stories.should == [ story ] }
+    end
   end
 end
