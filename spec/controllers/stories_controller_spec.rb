@@ -5,9 +5,15 @@ describe StoriesController do
   it { should route(:post, '/stories').to(controller: :stories, action: :create) }
   
   describe '#index' do
-    specify do
+    let!(:first_story) { create :story }
+    let!(:second_story) { create :story }
+
+    it 'orders on the default StoryOrder' do
+      first_story.story_order_positions.last.move_to_bottom
+
       get(:index)
-      assigns[:stories].should == Story.all
+      
+      assigns[:stories].should == [ second_story, first_story ]
     end
   end
 
