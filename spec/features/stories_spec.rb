@@ -55,4 +55,24 @@ feature 'Stories' do
       end
     end
   end
+
+  scenario 'dragging stories around', js: true do
+    stories = all('#stories_index > .story')
+
+    last_story = stories.last
+
+    first_story = stories.first
+
+    last_story.drag_to(first_story)
+    
+    page.evaluate_script("$('##{last_story[:id]}').trigger('sortupdate');");
+    
+    page.should have_css('.fa-check')
+
+    visit root_path
+
+    stories = all('#stories_index > .story')
+
+    stories[0].should have_content new_child_story.title
+  end
 end

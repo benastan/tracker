@@ -11,9 +11,13 @@ describe('IndexStory', function() {
 
     $el = $(html);
 
-    $form = $el.find('form');
+    $newStoryStoryForm = $el.find('.new_story_story');
 
-    view = new IndexStory({
+    $editStoryOrderPosition = $el.find('.edit_story_order_position');
+
+    $storyOrderPositionPosition = $el.find('#story_order_position_position');
+
+    view = new window.IndexStory({
       el: $el.get(0)
     });
   });
@@ -22,9 +26,17 @@ describe('IndexStory', function() {
     it('handles ajax:success', function() {
       spyOn(view, 'renderChildStories');
       
-      $form.trigger('ajax:success', [ storyStory ]);
+      $newStoryStoryForm.trigger('ajax:success', [ storyStory ]);
 
       expect(view.renderChildStories).toHaveBeenCalledWith(storyStory);
+    });
+
+    it('submits .edit_story_order_position on sortupdate', function() {
+      spyOn(view, 'updateStoryOrderPosition');
+
+      $el.trigger('sortupdate');
+
+      expect(view.updateStoryOrderPosition).toHaveBeenCalled();
     });
   });
 
@@ -34,5 +46,25 @@ describe('IndexStory', function() {
 
       expect($el.find('ul')).toContainText('Child Story');
     });
+  });
+
+  describe('#updateStoryOrderPosition', function() {
+    var eventSpy, $indexStub, $fakeStory;
+
+    beforeEach(function() {
+      $indexStub = sinon.stub($.fn, 'index');
+
+      $indexStub.withArgs($el.get(0)).returns('99');
+    });
+
+    it('submits the StoryOrderPosition form', function() {
+      eventSpy = spyOnEvent($editStoryOrderPosition, 'submit');
+
+      view.updateStoryOrderPosition();
+
+      expect($storyOrderPositionPosition).toHaveValue('99');
+
+      expect(eventSpy).toHaveBeenTriggered();
+    })
   });
 });

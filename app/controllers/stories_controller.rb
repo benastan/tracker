@@ -21,4 +21,5 @@ class StoriesController < ApplicationController
   def story_order
     StoryOrder.first_or_create
   end
+  helper_method :story_order
 end

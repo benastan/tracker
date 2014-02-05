@@ -3,7 +3,7 @@ class StoryOrderPositionsController < ApplicationController
 
   def update
     story_order_position = StoryOrderPosition.find(params[:id])
-    new_position = permitted_params.fetch(:story_order_position).fetch(:position)
+    new_position = permitted_params.fetch(:story_order_position).fetch(:position).to_i
     story_order_position.insert_at(new_position)
     head :ok
   end

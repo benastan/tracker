@@ -2,8 +2,14 @@
   > .story {
     background: #f9f9f9;
     margin: 15px 0;
-    padding: 5px 10px 15px;
+    padding: 5px 10px;
     border-bottom: 2px solid #f7f7f7;
+
+    .edit_story_order_position {
+      position: relative;
+
+      .fa { display: none; }
+    }
 
     .story_tasks {
       padding: 0 5px 5px;
@@ -34,3 +40,4 @@
     }
   }
 }
+

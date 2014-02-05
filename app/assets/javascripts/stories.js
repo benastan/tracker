@@ -1,24 +1,38 @@
 $('#stories_index').each(function() {
-  var view;
+  $storiesIndexRoot = $(this)
 
-  view = new IndexStory({
-    el: this
-  });
+  $stories = $storiesIndexRoot.children('.story')
 
-  view.$el.find('.new_story_story').on({
-    'ajax:success': function(storyStory) {
-      var $form, $check, html;
-      
-      $form = $(this);
-      $check = $form.find('.showOnSuccess');
+  $stories.each(function() {
+    var view;
 
-      $check.show();
+    view = new IndexStory({
+      el: this
+    });
 
-      function hideCheck() {
-        $check.fadeOut()
+    view.$el.find('form').on({
+      'ajax:success': function(storyStory) {
+        var $form, $check, html;
+        
+        $form = $(this);
+        $check = $form.find('.showOnSuccess');
+
+        $check.show();
+
+        function hideCheck() {
+          $check.fadeOut()
+        }
+
+        setTimeout(hideCheck, 1000);
       }
+    });
+  });
+  
+  $storiesIndexRoot.sortable();
 
-      setTimeout(hideCheck, 1000);
-    }
+  $storiesIndexRoot.disableSelection();
+
+  $storiesIndexRoot.on('sortupdate', function(e, ui) {
+    $(ui.item).triggerHandler('sortupdate', arguments);
   });
 });

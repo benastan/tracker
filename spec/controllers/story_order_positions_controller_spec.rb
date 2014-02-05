@@ -15,7 +15,7 @@ describe StoryOrderPositionsController do
 
   describe '#update' do
     def patch_update
-      patch :update, id: story_order_position.id, story_order_position: { position: 2 }, format: :json
+      patch :update, id: story_order_position.id, story_order_position: { position: '2' }, format: :json
     end
 
     specify { patch_update.should be_success }
