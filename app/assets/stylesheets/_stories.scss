@@ -12,14 +12,15 @@
       line-height: $square;
       overflow: hidden;
       border-radius: $square / 2;
-      box-shadow: inset 0px -17px 27px -30px black;
+      box-shadow: 0px 7px 19px -9px #666, 0px 2px 5px -2px black, inset 0px 17px 27px -30px black;
       text-align: center;
-      vertical-align: center;
       cursor: -webkit-grabbing;
       cursor: grabbing;
 
       > h4 {
-        max-height: 52px;
+        display: table-cell;
+        vertical-align: middle;
+        height: 52px;
         width: 95%;
         margin: 0 auto;
         overflow: hidden;
