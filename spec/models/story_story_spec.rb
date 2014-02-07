@@ -11,31 +11,33 @@ describe StoryStory do
   it { should validate_presence_of(:parent_story_id) }
 
   describe 'validations' do
-    shared_examples_for 'an invalid StoryStory' do
-      it 'is not valid' do
-        invalid_story_story = StoryStory.new(attributes)
-        invalid_story_story.should_not be_valid
-      end
-    end
+    context 'when the parent_story is nested beneath the child_story' do
+      before { child_story.child_stories << parent_story }
 
-    context 'when a StoryStory exists with this parent_story_id and child_story_id' do
-      let(:attributes) { { parent_story: parent_story, child_story: child_story } }
-      it_should_behave_like 'an invalid StoryStory'
-    end
-
-    it 'cannot be its own parent' do
-      invalid_story_story = parent_story.parent_story_stories.create(parent_story_id: parent_story.id)
-      invalid_story_story.should_not be_valid
-    end
-
-    it 'cannot have a parent whose parent is itself' do
-      parent_story.parent_story_stories.create(parent_story_id: child_story.id)
-      invalid_story_story = child_story.parent_story_stories.create(parent_story_id: parent_story.id)
-      invalid_story_story.should_not be_valid
+      specify { child_story.parent_stories.should_not include parent_story }
+      specify { child_story.child_stories.should include parent_story }
     end
   end
 
-  describe 'serializable_hash' do
+  describe '#parent_story_stories_of' do
+    let(:story) { create :story }
+    let(:mid_story_1) { mid_story_1 = story.parent_stories.create(title: 'mid story 1') }
+    let(:mid_story_2) { mid_story_2 = story.parent_stories.create(title: 'mid story 2') }
+    let!(:top_story_1) { mid_story_1.parent_stories.create(title: 'top story 1') }
+    let!(:top_story_2) { mid_story_2.parent_stories.create(title: 'top story 2') }
+    let(:top_story_3) { mid_story_2.parent_stories.create(title: 'top story 3') }
+    let!(:tippy_top_story) { top_story_3.parent_stories.create(title: 'tippy top story') }
+    let(:parent_story_stories) { StoryStory.parent_story_stories_of(story) } 
+
+    specify { parent_story_stories.should include mid_story_1.child_story_stories.first }
+    specify { parent_story_stories.should include mid_story_2.child_story_stories.first }
+    specify { parent_story_stories.should include top_story_1.child_story_stories.first }
+    specify { parent_story_stories.should include top_story_2.child_story_stories.first }
+    specify { parent_story_stories.should include top_story_3.child_story_stories.first }
+    specify { parent_story_stories.should include tippy_top_story.child_story_stories.first }
+  end
+
+  describe '#serializable_hash' do
     it 'includes #parent_story' do
       story_story.serializable_hash['parent_story'].should == parent_story.serializable_hash
     end

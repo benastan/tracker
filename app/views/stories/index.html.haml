@@ -1,28 +1,31 @@
-= link_to 'New Story', new_story_path
+.row
+  .large-4.columns
+    = link_to 'New Story', new_story_path, class: 'tiny radius button'
 
-#stories_index
-  - @stories.each do |story|
-    = div_for(story) do
-      %h4
-        = story.title
-        = simple_form_for story_order.story_order_positions.find_by(story: story), remote: true do |f|
-          = f.hidden_field :position
-          = f.submit 'Change Position', class: 'hide', data: { :'disable-with' => 'Saving...' }
-          %i.fa.fa-check.showOnSuccess
+  #stories_index.large-8.columns
+    %h3 The Queue
+    - @stories.each do |story|
+      = div_for(story) do
+        %h4
+          = story.title
+          = simple_form_for story_order.story_order_positions.find_by(story: story), remote: true do |f|
+            = f.hidden_field :position
+            = f.submit 'Change Position', class: 'hide', data: { :'disable-with' => 'Saving...' }
+            %i.fa.fa-check.showOnSuccess
 
-      .story_tasks
-        %h5 Tasks
+        .story_tasks
+          %h5 Tasks
 
-        %ul
-          = content_tag_for(:li, story.child_stories) do |child_story|
-            = child_story.title
+          %ul
+            = content_tag_for(:li, story.child_stories) do |child_story|
+              = child_story.title
 
-          = content_tag_for(:li, story.child_stories.new, class: 'hide')
+            = content_tag_for(:li, story.child_stories.new, class: 'hide')
 
-        = simple_form_for(story.child_story_stories.new, remote: true, format: :json) do |f|
-          %h6 Add a Task
-          = f.hidden_field :parent_story_id
-          = f.input :child_story_id, collection: Story.where.not(id: story.child_stories.pluck(:id).concat([story.id])).pluck(:title, :id), as: :select, prompt: 'Select a Task', label: false
-          = f.submit 'Add Task', data: { :'disable-with' => 'Add Task' }
-          %i.fa.fa-spinner.fa-spin.hide
-          %i.fa.fa-check.hide.showOnSuccess
+          = simple_form_for(story.child_story_stories.new, remote: true, format: :json) do |f|
+            %h6 Add a Task
+            = f.hidden_field :parent_story_id
+            = f.input :child_story_id, collection: Story.where.not(id: story.child_stories.pluck(:id).concat([story.id])).pluck(:title, :id), as: :select, prompt: 'Select a Task', label: false
+            = f.submit 'Add Task', data: { :'disable-with' => 'Add Task' }
+            %i.fa.fa-spinner.fa-spin.hide
+            %i.fa.fa-check.hide.showOnSuccess
