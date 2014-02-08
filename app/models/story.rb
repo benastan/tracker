@@ -11,7 +11,29 @@ class Story < ActiveRecord::Base
     story_order.stories << self
   end
 
+  def blocking?
+    parent_stories.any?
+  end
+
+  def blocked?
+    child_stories.any?
+  end
+
+  def epic?
+    blocked? && ! blocking?
+  end
+
+  def unblocked?
+    ! blocked?
+  end
+
   def serializable_hash(options = {})
+    options[:methods] ||= []
+    options[:methods] << :blocking?
+    options[:methods] << :blocked?
+    options[:methods] << :unblocked?
+    options[:methods] << :epic?
+    
     options[:include] ||= []
     options[:include] << :child_stories
     super(options)
@@ -28,3 +50,4 @@ class Story < ActiveRecord::Base
     end
   end
 end
+

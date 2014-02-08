@@ -59,12 +59,44 @@ describe Story do
     end
   end
 
-  describe '#serializable_hash' do
-    let!(:parent_story) { Story.create }
-    let!(:child_story) { parent_story.child_stories.create }
+  describe '#blocking?', simple_story_tree: true do
+    specify { epic_story.should_not be_blocking }
+    specify { middle_story.should be_blocking }
+    specify { unblocked_story.should be_blocking }
+    specify { standalone_story.should_not be_blocking }
+  end
+
+  describe '#blocked?', simple_story_tree: true do
+    specify { epic_story.should be_blocked }
+    specify { middle_story.should be_blocked }
+    specify { unblocked_story.should_not be_blocked }
+    specify { standalone_story.should_not be_blocked }
+  end
+
+  describe '#unblocked?', simple_story_tree: true do
+    specify { epic_story.should_not be_unblocked }
+    specify { middle_story.should_not be_unblocked }
+    specify { unblocked_story.should be_unblocked }
+    specify { standalone_story.should be_unblocked }
+  end
+
+  describe '#epic?', simple_story_tree: true do
+    specify { epic_story.should be_epic }
+    specify { middle_story.should_not be_epic }
+    specify { unblocked_story.should_not be_epic }
+    specify { standalone_story.should_not be_epic }
+  end
+
+  describe '#serializable_hash', simple_story_tree: true do
+    let(:serialized_hash) { epic_story.serializable_hash }
+
+    specify { serialized_hash['blocking?'].should == false }
+    specify { serialized_hash['blocked?'].should == true }
+    specify { serialized_hash['unblocked?'].should == false }
+    specify { serialized_hash['epic?'].should == true }
 
     it "includes the story's children" do
-      parent_story.serializable_hash['child_stories'].should == [ child_story.serializable_hash ]
+      serialized_hash['child_stories'].should == [ middle_story.serializable_hash ]
     end
   end
 
@@ -79,31 +111,11 @@ describe Story do
     end
   end
 
-  describe '.unblocked' do
-    let(:epic_story) { create :story, title: 'Epic Story' }
-    let(:middle_story) { create :story, title: 'Middle Story' }
-    let(:unblocked_story) { create :story, title: 'Unblocked Story' }
-    let!(:standalone_story) { create :story, title: 'Standalone Story' }
-
-    before do
-      epic_story.child_stories << middle_story
-      middle_story.child_stories << unblocked_story
-    end
-
+  describe '.unblocked', simple_story_tree: true do
     specify { Story.unblocked.should =~ [ unblocked_story, standalone_story ] }
   end
 
-  describe '.epic' do
-    let(:epic_story) { create :story, title: 'Epic Story' }
-    let(:middle_story) { create :story, title: 'Middle Story' }
-    let(:unblocked_story) { create :story, title: 'Unblocked Story' }
-    let!(:standalone_story) { create :story, title: 'Standalone Story' }
-
-    before do
-      epic_story.child_stories << middle_story
-      middle_story.child_stories << unblocked_story
-    end
-
+  describe '.epic', simple_story_tree: true do
     specify { Story.epic.should =~ [ epic_story ] }
   end
 end
