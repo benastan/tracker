@@ -13,7 +13,7 @@ ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 StoryOrderPositionsController
 
 RSpec.configure do |config|
-  Capybara.javascript_driver = :webkit
+  Capybara.javascript_driver = :selenium
   Capybara.ignore_hidden_elements = true
   
   config.include FactoryGirl::Syntax::Methods
