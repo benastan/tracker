@@ -16,4 +16,15 @@ class Story < ActiveRecord::Base
     options[:include] << :child_stories
     super(options)
   end
+
+  class << self
+    def unblocked
+      where('(select count(id) from story_stories where story_stories.parent_story_id = stories.id) = 0')
+    end
+
+    def epic
+      where('(select count(id) from story_stories where story_stories.child_story_id = stories.id) = 0')
+        .where('(select count(id) from story_stories where story_stories.parent_story_id = stories.id) > 0')
+    end
+  end
 end

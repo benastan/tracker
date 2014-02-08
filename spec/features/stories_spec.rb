@@ -1,26 +1,35 @@
 require 'spec_helper'
 
 feature 'Stories' do
-  let!(:parent_story) { create :story, title: 'Parent Story' }
-  let!(:old_child_story) { create :story, parent_story: parent_story }
-  let!(:new_child_story) { create :story, title: 'New Child Story' }
+  let(:epic_story) { create :story, title: 'Epic Story' }
+  let(:middle_story) { create :story, title: 'Middle Story' }
+  let(:unblocked_story) { create :story, title: 'Unblocked Story' }
+  let!(:standalone_story) { create :story, title: 'Standalone Story' }
 
   before do
+    epic_story.child_stories << middle_story
+    middle_story.child_stories << unblocked_story
+
     visit root_path
   end
 
-  it 'renders each story' do
-    within "#story_#{parent_story.id}" do
-      within 'ul' do
-        page.should have_content old_child_story.title
-      end
+  it 'shows unblocked stories by default', js: true do
+    page.should have_css '.story > h4', text: 'Unblocked Story'
+    page.should have_css '.story > h4', text: 'Standalone Story'
+    page.should_not have_css '.story > h4', text: 'Middle Story'
+    page.should_not have_css '.story > h4', text: 'Epic Story'
 
-      within "#new_story_story" do
-        page.should_not have_xpath ".//option[@value=\"#{parent_story.id}\"]"
-        
-        page.should_not have_xpath ".//option[@value=\"#{old_child_story.id}\"]"
-      end
-    end
+    page.should have_css "#story_#{unblocked_story.id}", text: /blocks/i
+    page.should_not have_css "#story_#{standalone_story.id}", text: /blocks/i
+  end
+
+  it 'shows epic stories by default', js: true do
+    click_on 'Epics'
+
+    page.should have_css '.story > h4', text: 'Epic Story'
+    page.should_not have_css '.story > h4', text: 'Standalone Story'
+    page.should_not have_css '.story > h4', text: 'Middle Story'
+    page.should_not have_css '.story > h4', text: 'Unblocked Story'
   end
 
   scenario 'creating a story' do
@@ -33,43 +42,55 @@ feature 'Stories' do
     page.should have_content 'Hello, World'
   end
 
-  scenario 'adding an existing child story', js: true do
-    within "#story_#{parent_story.id}" do
-      within "#new_story_story" do
-        select 'New Child Story', from: 'story_story_child_story_id'
-
-        click_on 'Add Task'
-
-        page.should have_css '.fa-spinner'
-
-        page.should have_css '.fa-check'
-      end
-      
-      page.should_not have_css '.fa-check'
-      
-      within 'ul' do
-        page.should have_content 'New Child Story'
-      end
-    end
-  end
-
-  scenario 'dragging stories around', js: true do
+  scenario 'nesting a story by draging', js: true do
     stories = all('#stories_index > .story')
 
-    last_story = stories.last
+    first_story = find("#story_#{unblocked_story.id}")
 
-    first_story = stories.first
-
-    last_story.drag_to(first_story)
+    first_story[:'data-id'].should == unblocked_story.id.to_s
     
-    page.evaluate_script("$('##{last_story[:id]}').trigger('sortupdate');");
+    second_story = find("#story_#{standalone_story.id}")
+
+    second_story.drag_to(first_story.find('h4'))
+
+    page.should_not have_css '.story > h4', text: 'Standalone Story'
     
-    page.should have_css('.fa-check')
+    # visit root_path 
 
-    visit root_path
+    # stories = all('#stories_index > .story')
 
-    stories = all('#stories_index > .story')
-
-    stories[0].should have_content new_child_story.title
+    # stories[0].should have_content new_child_story.title
   end
+
+
+#   scenario 'sorting a story by draging', js: true do
+#     stories = all('#stories_index > .story')
+
+#     first_story = stories.first
+    
+#     second_story = stories[1]
+
+#     last_story = stories.last
+
+#     sleep 2
+
+#     last_story.drag_to(second_story)
+
+#     sleep 2
+
+#     page.evaluate_script("$('##{last_story[:id]}').triggerHandler('sortupdate');");
+    
+#     page.should have_css('.fa-check')
+    
+#     sleep 2
+
+#     visit root_path
+
+#     stories = all('#stories_index > .story')
+
+#     sleep 2
+
+#     stories[1].should have_content new_child_story.title
+#   end
+
 end

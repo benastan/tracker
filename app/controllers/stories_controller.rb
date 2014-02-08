@@ -1,6 +1,23 @@
 class StoriesController < ApplicationController
+  respond_to :json, :html
   def index
-    @stories = story_order.stories
+    @unblocked_stories = story_order.stories.unblocked
+    @epic_stories = story_order.stories.epic
+
+    respond_to do |format|
+      format.html
+
+      format.json do
+        render json:
+          if params[:unblocked]
+            @unblocked_stories
+          elsif params[:epic]
+            @epic_stories
+          else
+            story_order.stories
+          end
+      end
+    end
   end
 
   def new

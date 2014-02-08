@@ -78,4 +78,32 @@ describe Story do
       specify { child_story.parent_stories.should == [ story ] }
     end
   end
+
+  describe '.unblocked' do
+    let(:epic_story) { create :story, title: 'Epic Story' }
+    let(:middle_story) { create :story, title: 'Middle Story' }
+    let(:unblocked_story) { create :story, title: 'Unblocked Story' }
+    let!(:standalone_story) { create :story, title: 'Standalone Story' }
+
+    before do
+      epic_story.child_stories << middle_story
+      middle_story.child_stories << unblocked_story
+    end
+
+    specify { Story.unblocked.should =~ [ unblocked_story, standalone_story ] }
+  end
+
+  describe '.epic' do
+    let(:epic_story) { create :story, title: 'Epic Story' }
+    let(:middle_story) { create :story, title: 'Middle Story' }
+    let(:unblocked_story) { create :story, title: 'Unblocked Story' }
+    let!(:standalone_story) { create :story, title: 'Standalone Story' }
+
+    before do
+      epic_story.child_stories << middle_story
+      middle_story.child_stories << unblocked_story
+    end
+
+    specify { Story.epic.should =~ [ epic_story ] }
+  end
 end

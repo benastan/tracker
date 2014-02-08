@@ -5,15 +5,40 @@ describe StoriesController do
   it { should route(:post, '/stories').to(controller: :stories, action: :create) }
   
   describe '#index' do
-    let!(:first_story) { create :story }
-    let!(:second_story) { create :story }
+    let(:fake_stories_relation) { double(:stories, to_json: '"all"', unblocked: :unblocked, epic: :epic) }
+    let!(:fake_story_order) { double(:story_order, stories: fake_stories_relation) }
+    
+    before do
+      StoryOrder.stub(:first_or_create) { fake_story_order }
+    end
 
-    it 'orders on the default StoryOrder' do
-      first_story.story_order_positions.last.move_to_bottom
+    context 'when the format is json' do
+      specify do
+        get(:index, format: :json, unblocked: true)
 
-      get(:index)
+        response.body.should == '"unblocked"'
+      end
       
-      assigns[:stories].should == [ second_story, first_story ]
+      specify do
+        get(:index, format: :json, epic: true)
+
+        response.body.should == '"epic"'
+      end
+      
+      specify do
+        get(:index, format: :json)
+
+        response.body.should == '"all"'
+      end
+    end
+
+    context 'when the format is html' do
+      it 'orders on the default StoryOrder' do
+        get(:index)
+        
+        assigns[:unblocked_stories].should == :unblocked
+        assigns[:epic_stories].should == :epic
+      end
     end
   end
 
