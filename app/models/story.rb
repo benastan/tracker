@@ -1,10 +1,25 @@
 class Story < ActiveRecord::Base
-	has_many :parent_story_stories, foreign_key: :child_story_id, class_name: :StoryStory, dependent: :destroy
-	has_many :child_story_stories, foreign_key: :parent_story_id, class_name: :StoryStory, dependent: :destroy
-	has_many :parent_stories, through: :parent_story_stories
-	has_many :child_stories, through: :child_story_stories
+
+  has_many :child_stories,
+    through: :child_story_stories
+
+  has_many :child_story_stories,
+    foreign_key: :parent_story_id,
+    class_name: :StoryStory,
+    dependent: :destroy
+
+  has_many :parent_stories,
+    through: :parent_story_stories
+
+	has_many :parent_story_stories,
+    foreign_key: :child_story_id,
+    class_name: :StoryStory,
+    dependent: :destroy
+
+  has_many :story_orders,
+    through: :story_order_positions
+
   has_many :story_order_positions
-  has_many :story_orders, through: :story_order_positions
 
   after_create do
     story_order = StoryOrder.first_or_create
@@ -34,8 +49,6 @@ class Story < ActiveRecord::Base
     options[:methods] << :unblocked?
     options[:methods] << :epic?
     
-    options[:include] ||= []
-    options[:include] << :child_stories
     super(options)
   end
 

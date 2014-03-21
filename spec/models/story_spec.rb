@@ -95,9 +95,13 @@ describe Story do
     specify { serialized_hash['unblocked?'].should == false }
     specify { serialized_hash['epic?'].should == true }
 
-    it "includes the story's children" do
-      serialized_hash['child_stories'].should == [ middle_story.serializable_hash ]
-    end
+    # it "includes the story's children" do
+    #   serialized_hash['child_stories'].should == [ middle_story.serializable_hash ]
+    # end
+
+    # it "includes the story's parents" do
+    #   serialized_hash['parent_stories'].should == [ middle_story.serializable_hash ]
+    # end
   end
 
   describe 'factories' do

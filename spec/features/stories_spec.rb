@@ -8,32 +8,14 @@ feature 'Stories' do
 
   before do
     epic_story.child_stories << middle_story
+
     middle_story.child_stories << unblocked_story
 
     visit root_path
   end
 
-  it 'shows unblocked stories by default', js: true do
-    page.should have_css '.story > h4', text: 'Unblocked Story'
-    page.should have_css '.story > h4', text: 'Standalone Story'
-    page.should_not have_css '.story > h4', text: 'Middle Story'
-    page.should_not have_css '.story > h4', text: 'Epic Story'
-
-    page.should have_css "#story_#{unblocked_story.id}", text: /blocks/i
-    page.should_not have_css "#story_#{standalone_story.id}", text: /blocks/i
-  end
-
-  it 'shows epic stories by default', js: true do
-    click_on 'Epics'
-
-    page.should have_css '.story > h4', text: 'Epic Story'
-    page.should_not have_css '.story > h4', text: 'Standalone Story'
-    page.should_not have_css '.story > h4', text: 'Middle Story'
-    page.should_not have_css '.story > h4', text: 'Unblocked Story'
-  end
-
   scenario 'creating a story' do
-    click_on 'New Story'
+    visit new_story_path
 
     fill_in 'story_title', with: 'Hello, World'
 
@@ -42,26 +24,33 @@ feature 'Stories' do
     page.should have_content 'Hello, World'
   end
 
+  scenario 'click through to story' do
+    click_on 'Unblocked Story'
+
+    page.should have_css '#show_story > h3', text: 'Unblocked Story'
+  end
+
+  scenario 'show story', js: true do
+    middle_story.child_stories << create(:story, title: 'Middle Story Child')
+    
+    visit story_path(middle_story)
+
+    page.should have_css '.story > h4', text: 'Unblocked Story'
+
+    all('.story')[1].drag_to first('.story > h4')
+    
+    page.should_not have_css '.story > h4', text: 'Middle Story Child'
+  end
+
   scenario 'nesting a story by draging', js: true do
-    stories = all('#stories_index > .story')
-
     first_story = find("#story_#{unblocked_story.id}")
-
-    first_story[:'data-id'].should == unblocked_story.id.to_s
     
     second_story = find("#story_#{standalone_story.id}")
 
-    second_story.drag_to(first_story.find('h4'))
+    first_story.drag_to(second_story.find('h4'))
 
-    page.should_not have_css '.story > h4', text: 'Standalone Story'
-    
-    # visit root_path 
-
-    # stories = all('#stories_index > .story')
-
-    # stories[0].should have_content new_child_story.title
+    page.should have_css '.story > h4', text: 'Standalone Story'
   end
-
 
 #   scenario 'sorting a story by draging', js: true do
 #     stories = all('#stories_index > .story')

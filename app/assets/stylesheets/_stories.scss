@@ -1,4 +1,44 @@
-#unblocked_stories, #epic_stories {
+#stories_sidebar {
+  ul {
+    margin: 0;
+  }
+
+  li {
+    list-style: none;
+  }
+
+  h2 {
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #888;
+    padding: 5px;
+  }
+
+  > .sidebar_content {
+    > li {
+      padding-bottom: 10px;
+
+      a {
+        display: block;
+        color: #333;
+        font-size: 14px;
+        padding: 2px 5px;
+
+        &:hover {
+          background: #fafafa;
+        }
+      }
+
+      + li {
+        padding-top: 15px;
+        border-top: 2px solid #eee;
+      }
+    }
+  }
+}
+
+#unblocked_stories, #epic_stories, #child_stories, #parent_stories {
   width: 100%;
   
   > .story {
@@ -11,11 +51,28 @@
     box-shadow: 0 2px 5px -5px black, 0px 10px 34px -26px black;
 
     &.drop-hover {
-      box-shadow: 0 2px 5px -5px black, 0px 10px 34px -26px black, 0px 0px 4px -1px orange, 0px 0px 60px -20px orange
+      box-shadow: 0 2px 5px -5px black, 0px 10px 34px -26px black, 0px 0px 4px -1px orange, 0px 0px 60px -20px orange;
+      
+      ul {
+        display: inherit;
+      }
+
+      .childStoryHint {
+        display: inherit;
+        color: orange;
+        border-left-color: orange;
+      }
+    }
+
+    &.adding-child {
+      ul, .childStoryHint { display: inherit; }
     }
 
     > h4 {
-      color: #666;
+      > a {
+        display: block;
+        color: #666;
+      }
 
       .fa-check {
         position: absolute;
@@ -69,6 +126,10 @@
         & + li { margin-top: 4px; }
       }
     }
+    
+    .childStoryHint {
+      display: none;
+    }
 
     &.ui-draggable-dragging {
       $square: 100px;
@@ -81,6 +142,7 @@
       text-align: center;
       cursor: -webkit-grabbing;
       cursor: grabbing;
+      z-index: 2;
 
       > h4 {
         display: table-cell;

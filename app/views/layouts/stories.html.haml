@@ -1,0 +1,8 @@
+- content_for :content do
+  .row
+    = render_sidebar
+
+    #stories_index.medium-8.columns
+      = yield
+
+= render template: 'layouts/application'

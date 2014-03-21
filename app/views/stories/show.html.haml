@@ -1,0 +1,18 @@
+.row
+  #show_story.large-12.columns
+    %h3
+      = @story.title
+
+    %dl.tabs{ data: { tab: ''} }
+      %dd.active
+        = link_to 'Tasks', '#child_stories'
+      %dd
+        = link_to 'Parents', '#parent_stories'
+
+    .tabs-content
+      #child_stories.content.active
+        = render partial: 'stories/index/story', collection: @story.child_stories
+        = link_to 'Refresh', story_path(@story, format: :json), data: { remote: true }, class: :hide
+      #parent_stories.content
+        = render partial: 'stories/index/story', collection: @story.parent_stories
+        = link_to 'Refresh', story_path(@story, format: :json), data: { remote: true }, class: :hide

@@ -1,0 +1,35 @@
+#stories_sidebar.medium-4.columns
+  %header.sidebar_header
+
+    - if @story
+      = link_to 'New Sub-story', new_story_story_story_path(@story), class: 'tiny radius button'
+    
+    - else
+      = link_to 'New Story', new_story_path, class: 'tiny radius button'
+
+  %ul.sidebar_content
+    - if @epic_stories.any?
+      %li
+        %h2
+          Epic
+        
+        %ul#epic_stories_list
+
+          - @epic_stories.each do |story|
+
+            = content_tag_for :li, story do
+
+              = link_to story.title, story
+
+    - if @unblocked_stories.any?
+      %li
+        %h2
+          Unblocked
+        
+        %ul#unblocked_stories_list
+
+          - @unblocked_stories.each do |story|
+
+            = content_tag_for :li, story do
+
+              = link_to story.title, story
