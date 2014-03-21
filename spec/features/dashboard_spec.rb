@@ -38,6 +38,12 @@ feature 'dashboard' do
 
     click_on 'Hello, World'
 
-    page.should have_link 'Add Sub-story', href: new_story_story_story_path(Story.last)
+    click_on 'New Sub-story'
+    
+    fill_in 'story_story_child_story_attributes_title', with: 'Hello, Globe'
+
+    click_on 'Create Story'
+
+    page.should have_content 'Hello, Globe'
   end
 end

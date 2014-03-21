@@ -37,7 +37,11 @@ class StoriesController < ApplicationController
     @story = Story.find(params[:id])
 
     respond_to do |format|
-      format.html
+      format.html do
+        @parent_stories = @story.parent_stories
+        
+        @child_stories = @story.child_stories
+      end
 
       format.json do
         render json: @story.serializable_hash(includes: [ :child_stories, :parent_stories ])

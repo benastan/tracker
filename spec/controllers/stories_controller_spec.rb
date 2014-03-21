@@ -1,13 +1,30 @@
 require 'spec_helper'
 
 describe StoriesController do
-  it { should route(:get, '/stories/new').to(controller: :stories, action: :new) }
-  it { should route(:post, '/stories').to(controller: :stories, action: :create) }
-  it { should route(:get, '/stories/1').to(controller: :stories, action: :show, id: '1') }
-  
+  it do
+    should route(:get, '/stories/new').to(controller: :stories, action: :new)
+  end
+
+  it do
+    should route(:post, '/stories').to(controller: :stories, action: :create)
+  end
+
+  it do
+    should route(:get, '/stories/1').to(controller: :stories, action: :show, id: '1')
+  end
+
   describe '#index' do
-    let(:fake_stories_relation) { double(:stories, to_json: '"all"', unblocked: :unblocked, epic: :epic) }
-    let!(:fake_story_order) { double(:story_order, stories: fake_stories_relation) }
+    let(:fake_stories_relation) do
+      double 'stories',
+        to_json: '"all"',
+        unblocked: :unblocked,
+        epic: :epic
+    end
+
+    let!(:fake_story_order) do
+      double 'story_order',
+        stories: fake_stories_relation
+    end
     
     before do
       StoryOrder.stub(:first_or_create) { fake_story_order }
@@ -44,22 +61,29 @@ describe StoriesController do
   end
 
   describe '#new' do
-    def get_new
+    specify do
       get(:new)
+
+      assigns(:story).should be_a Story
     end
 
     specify do
-      get_new
-      assigns[:story].should be_a Story
-      assigns[:story].should_not be_persisted
+      get(:new)
+      
+      assigns(:story).should_not be_persisted
     end
 
-  specify { get_new.should be_ok }
+    specify do
+      get(:new).should be_ok
+    end
   end
 
   describe '#create' do
     def post_create
-      post(:create, story: { title: 'My First Story' })
+      post :create,
+        story: {
+          title: 'My First Story'
+        }
     end
 
     specify do
@@ -74,8 +98,17 @@ describe StoriesController do
   end
 
   describe '#show' do
-    let(:fake_hash) { double(:serializable_hash, to_json: :shmargis)}
-    let(:fake_story) { double(:story, serializable_hash: fake_hash) }
+    let(:fake_hash) do
+      double 'serializable_hash',
+        to_json: :shmargis
+    end
+
+    let(:fake_story) do
+      double 'story',
+        serializable_hash: fake_hash,
+        parent_stories: 'kiddo',
+        child_stories: 'kid A'
+    end
 
     before do
       Story.stub(:find) { fake_story }
@@ -88,7 +121,20 @@ describe StoriesController do
 
       specify do
         get(:show, id: 'asgdsagsa')
-        assigns[:story].should == fake_story
+
+        assigns(:story).should == fake_story
+      end
+
+      specify do
+        get(:show, id: 'asdfasdfa')
+
+        assigns(:parent_stories).should == 'kiddo'
+      end
+
+      specify do
+        get(:show, id: 'asdfasdfa')
+
+        assigns(:child_stories).should == 'kid A'
       end
     end
 

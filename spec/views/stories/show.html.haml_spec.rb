@@ -1,75 +1,55 @@
 require 'spec_helper'
 
 describe 'stories/show.html.haml' do
+  let(:child_stories) { [] }
+
+  let(:child_story) do
+    create :story,
+      title: "Child Story"
+  end
+
   let(:story) do
-    create :story, title: 'My Story'
+    create :story,
+      title: 'Story'
   end
 
   before do
+    assign :child_stories, child_stories
+    
     assign :story, story
+
+    render
   end
 
   specify do
-    render.should have_css '#show_story'
+    rendered.should have_css '#show_story'
   end
   
   specify do
-    render.should have_css 'h3', text: 'My Story'
-  end
-
-  specify do
-    render.should have_link 'Tasks', href: '#child_stories'
-  end
-
-  specify do
-    render.should have_link 'Parents', href: '#parent_stories'
-  end
-
-  specify do
-    render.should have_xpath "//div[@id='child_stories']/a[@href='#{story_path(story, format: :json)}']", text: 'Refresh'
-  end
-
-  specify do
-    render.should have_xpath "//div[@id='parent_stories']/a[@href='#{story_path(story, format: :json)}']", text: 'Refresh'
+    rendered.should have_css 'h3', text: 'Story'
   end
   
-  specify do
-    render.should_not have_css "//div[@id='parent_stories']/div[@class='story']"
-  end
-  
-  specify do
-    render.should_not have_css "//div[@id='child_stories']/div[@class='story']"
-  end
-
-  describe '#child_stories' do
-    context 'when the story has child stories' do
-      let!(:child_story) do
-        story.child_stories.create(attributes_for(:story, title: 'Child'))
-      end
-      
-      specify do
-        render.should have_css "//div[@id='child_stories']/div[@class='story']/h4", text: 'Child'
-      end
-      
-      specify do
-        render.should_not have_css "//div[@id='parent_stories']/div[@class='story']"
-      end
+  context 'when there are no child stories' do
+    specify do
+      rendered.should_not have_css 'h4', text: 'Sub-stories'
     end
   end
 
-  describe '#parent_stories' do
-    context 'when the story has parent stories' do
-      let!(:parent_story) do
-        story.parent_stories.create(attributes_for(:story, title: 'Parent'))
-      end
-      
-      specify do
-        render.should have_css "//div[@id='parent_stories']/div[@class='story']/h4", text: 'Parent'
-      end
-      
-      specify do
-        render.should_not have_css "//div[@id='child_stories']/div[@class='story']"
-      end
+  context 'when there are child stories' do
+    let(:child_stories) do
+      [ child_story ]
     end
+
+    specify do
+      rendered.should have_css 'h4', text: 'Sub-stories'
+    end
+
+    specify do
+      rendered.should have_css '.story', count: 2
+    end
+
+    specify do
+      rendered.should have_css '.story h5', count: 1, text: 'Child Story'
+    end      
   end
 end

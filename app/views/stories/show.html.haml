@@ -3,16 +3,12 @@
     %h3
       = @story.title
 
-    %dl.tabs{ data: { tab: ''} }
-      %dd.active
-        = link_to 'Tasks', '#child_stories'
-      %dd
-        = link_to 'Parents', '#parent_stories'
+    - if @child_stories.any?
 
-    .tabs-content
-      #child_stories.content.active
-        = render partial: 'stories/index/story', collection: @story.child_stories
-        = link_to 'Refresh', story_path(@story, format: :json), data: { remote: true }, class: :hide
-      #parent_stories.content
-        = render partial: 'stories/index/story', collection: @story.parent_stories
-        = link_to 'Refresh', story_path(@story, format: :json), data: { remote: true }, class: :hide
+      %h4
+        Sub-stories
+
+      = div_for @child_stories do |child_story|
+
+        %h5
+          = child_story.title

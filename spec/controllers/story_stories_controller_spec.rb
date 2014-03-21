@@ -94,6 +94,14 @@ describe StoryStoriesController do
       create :story
     end
 
+    let(:child_story) do
+      build :story
+    end
+
+    before do
+      Story.stub(new: new_story)
+    end
+    
     specify do
       get(:new, story_id: parent_story.id).should render_template :new
     end
@@ -108,6 +116,12 @@ describe StoryStoriesController do
       get(:new, story_id: parent_story.id)
 
       assigns(:story_story).parent_story.should == parent_story
+    end
+
+    specify do
+      get(:new, story_id: parent_story.id)
+
+      assigns(:story_story).child_story.should == new_story
     end
   end
 end
