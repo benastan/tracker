@@ -17,20 +17,9 @@ describe 'shared/stories/_sidebar.html.haml' do
     render
   end
 
-  context 'when a story is assigned' do
-    let(:story) { FactoryGirl.build(:story, id: 3, title: 'Current Page Story') }
+  specify { render.should have_css '#stories_sidebar a', text: 'New Story' }
 
-    specify { render.should have_css '#stories_sidebar a', text: 'New Sub-story' }
-
-    specify { render.should have_link 'New Sub-story', href: new_story_story_story_path(3) }
-  end
-  
-  context 'when a story is not assigned' do
-    specify { render.should have_css '#stories_sidebar a', text: 'New Story' }
-
-    specify { render.should have_link 'New Story', href: new_story_path }
-  end
-
+  specify { render.should have_link 'New Story', href: new_story_path }
   
   specify { render.should have_css '#stories_sidebar' }
   

@@ -1,0 +1,9 @@
+= simple_form_for @story_story do |f|
+  
+  = f.hidden_field :parent_story_id
+
+  = f.simple_fields_for :child_story do |ff|
+
+    = ff.input :title
+
+  = f.submit "Create Story"

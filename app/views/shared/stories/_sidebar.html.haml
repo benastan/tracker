@@ -1,11 +1,7 @@
 #stories_sidebar.medium-4.columns
   %header.sidebar_header
-
-    - if @story
-      = link_to 'New Sub-story', new_story_story_story_path(@story), class: 'tiny radius button'
-    
-    - else
-      = link_to 'New Story', new_story_path, class: 'tiny radius button'
+    = link_to 'Home', :root
+    = link_to 'New Story', :new_story, class: 'tiny radius button'
 
   %ul.sidebar_content
     - if @epic_stories.any?

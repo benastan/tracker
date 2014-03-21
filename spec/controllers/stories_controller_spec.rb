@@ -115,6 +115,20 @@ describe StoriesController do
     end
 
     context 'when the format is html' do
+      let!(:new_story_story) do
+        StoryStory.new
+      end
+      
+      let!(:new_story) do
+        Story.new
+      end
+
+      before do
+        StoryStory.stub(new: new_story_story)
+
+        Story.stub(new: new_story)
+      end
+
       specify do
         get(:show, id: 'asdfasdfa').should be_ok
       end
@@ -135,6 +149,21 @@ describe StoriesController do
         get(:show, id: 'asdfasdfa')
 
         assigns(:child_stories).should == 'kid A'
+      end
+
+      specify do
+        get(:show, id: 'asdfasdfa')
+
+        assigns(:story_story).should == new_story_story
+      end
+
+      specify do
+        get(:show, id: 'asdfasdfa')
+
+        StoryStory.should have_received(:new).with(
+          parent_story: fake_story,
+          child_story: new_story
+        )
       end
     end
 

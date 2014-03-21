@@ -34,33 +34,7 @@ describe StoryStoriesController do
 
     def post_create
       post :create,
-        story_story: story_story_attributes,
-        format: :json
-    end
-
-    context 'when a story_story_id is provided' do
-      let(:story_story_attributes) do
-        {
-          parent_story_id: parent_story.id,
-          child_story_id: child_story.id
-        }
-      end
-
-      specify do
-        expect do
-          post_create
-        end.to change(parent_story.child_stories, :count).by(1)
-      end
-
-      specify do
-        expect do
-          post_create
-        end.to change(child_story.parent_stories, :count).by(1)
-      end
-
-      specify { post_create.code.should == '201' }
-
-      specify { post_create.body.should == StoryStory.last.to_json }
+        story_story: story_story_attributes
     end
     
     context 'when story_story_attributes are provided' do
@@ -94,7 +68,7 @@ describe StoryStoriesController do
       create :story
     end
 
-    let(:child_story) do
+    let(:new_story) do
       build :story
     end
 

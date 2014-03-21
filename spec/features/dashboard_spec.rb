@@ -37,8 +37,6 @@ feature 'dashboard' do
     page.should have_content 'Hello, World'
 
     click_on 'Hello, World'
-
-    click_on 'New Sub-story'
     
     fill_in 'story_story_child_story_attributes_title', with: 'Hello, Globe'
 

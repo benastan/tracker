@@ -41,6 +41,11 @@ class StoriesController < ApplicationController
         @parent_stories = @story.parent_stories
         
         @child_stories = @story.child_stories
+
+        @story_story = StoryStory.new(
+          parent_story: @story,
+          child_story: Story.new
+        )
       end
 
       format.json do

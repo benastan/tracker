@@ -13,10 +13,19 @@ describe 'stories/show.html.haml' do
       title: 'Story'
   end
 
+  let(:story_story) do
+    StoryStory.new(
+      parent_story: story,
+      child_story: Story.new
+    )
+  end
+
   before do
     assign :child_stories, child_stories
     
     assign :story, story
+    
+    assign :story_story, story_story
 
     render
   end
@@ -45,11 +54,21 @@ describe 'stories/show.html.haml' do
     end
 
     specify do
-      rendered.should have_css '.story', count: 2
+      rendered.should have_css '.story', count: 1
     end
 
     specify do
       rendered.should have_css '.story h5', count: 1, text: 'Child Story'
     end      
+  end
+
+  describe 'child story form' do
+    specify do
+      rendered.should have_css 'h4', text: 'Add Sub-story'
+    end
+
+    specify do
+      rendered.should have_css '#new_story_story'
+    end
   end
 end
