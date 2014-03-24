@@ -44,15 +44,21 @@ feature 'dashboard' do
 
     page.should have_content 'Hello, Globe'
 
+    fill_in 'story_title', with: 'Hello, Pope'
+
+    click_on 'Save'
+
+    page.should have_css '#story_title[value="Hello, Pope"]'
+
     first('.story_menu_toggle').click
 
-    first('.destroy_child_story_story').click
+    first(:link, 'Unnest story').click
 
-    first(:link, 'Hello, World').click
+    first(:link, 'Hello, Pope').click
 
     page.should_not have_css '#show_story .story', text: 'Hello, Globe'
 
-    first('h3 a').click
+    click_on 'Delete story'
 
     page.should_not have_content 'Hello, World'
   end

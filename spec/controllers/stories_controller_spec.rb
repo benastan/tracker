@@ -2,19 +2,23 @@ require 'spec_helper'
 
 describe StoriesController do
   it do
-    should route(:get, '/stories/new').to(controller: :stories, action: :new)
+    should route(:get, '/stories/new').to(action: :new)
   end
 
   it do
-    should route(:post, '/stories').to(controller: :stories, action: :create)
+    should route(:post, '/stories').to(action: :create)
   end
 
   it do
-    should route(:get, '/stories/1').to(controller: :stories, action: :show, id: '1')
+    should route(:get, '/stories/1').to(action: :show, id: '1')
   end
 
   it do
-    should route(:delete, '/stories/1').to(controller: :stories, action: :destroy, id: '1')
+    should route(:patch, '/stories/1').to(action: :update, id: '1')
+  end
+
+  it do
+    should route(:delete, '/stories/1').to(action: :destroy, id: '1')
   end
 
   describe '#index' do
@@ -181,6 +185,31 @@ describe StoriesController do
       specify do
         get(:show, id: 'asdfas', format: :json).body.should == "shmargis"
       end
+    end
+  end
+
+  describe 'PATCH update' do
+    let(:story) do
+      build :story
+    end
+
+    before do
+      story.stub(
+        update_attributes: true,
+        id: 1
+      )
+
+      Story.stub(find: story)
+    end
+
+    specify do
+      patch(:update, id: 1, story: { title: 'some title' })
+
+      story.should have_received(:update_attributes).with('title' => 'some title')
+    end
+
+    specify do
+      patch(:update, id: 1, story: { title: 'some title' }).should redirect_to story
     end
   end
 

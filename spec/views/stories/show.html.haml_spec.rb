@@ -39,9 +39,13 @@ describe 'stories/show.html.haml' do
   specify do
     rendered.should have_css '#show_story'
   end
+
+  specify do
+    rendered.should have_css "#edit_story_#{story.id}"
+  end
   
   specify do
-    rendered.should have_css 'h3', text: 'Story'
+    rendered.should have_css '#story_title[value="Story"]'
   end
   
   context 'when there are no child stories' do

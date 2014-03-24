@@ -54,6 +54,16 @@ class StoriesController < ApplicationController
     end
   end
 
+  def update
+    story = Story.find(params[:id])
+
+    story_attributes = params.require(:story).permit(:title)
+
+    story.update_attributes(story_attributes)
+    
+    redirect_to story
+  end
+
   def destroy
     story = Story.find(params[:id])
 

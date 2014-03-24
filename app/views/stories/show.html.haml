@@ -1,10 +1,18 @@
 .row
   #show_story.large-12.columns
-    %h3
-      = @story.title
+    .row
+      .small-11.columns
+        = simple_form_for @story do |f|
+          .row
+            .small-10.columns
+              = f.input_field :title
 
-      = link_to @story, method: :delete, title: "Delete story" do
-        %i.fa.fa-trash-o
+            .small-2.columns
+              = f.submit "Save", class: 'small button radius expand'
+
+      .small-1.columns
+        = link_to @story, method: :delete, title: "Delete story" do
+          %i.fa.fa-trash-o
 
     - if @child_story_stories.any?
 
@@ -34,7 +42,7 @@
                 %i.fa.fa-level-up
                 Prioritize
 
-            = link_to child_story_story, method: :delete, title: 'Unnest story', class: 'destroy_child_story_story' do
+            = link_to child_story_story, method: :delete, title: 'Unnest story' do
               %i.fa.fa-times
               Unnest Child
 
