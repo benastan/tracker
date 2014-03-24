@@ -1,9 +1,9 @@
-$('.story_menu').each(function() {
-  var $menu, $story, $toggle;
+$('.story_menu_toggle').each(function() {
+  var $story, $toggle;
 
-  $menu = $(this);
+  $toggle = $(this);
 
-  $story = $menu.parents('.story');
+  $story = $toggle.parents('.story');
 
   $story.on('click', '.story_menu_toggle', function() {
     $story.toggleClass('focus_menu');
