@@ -13,9 +13,24 @@
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 
+  > a {
+    position: relative;
+
+    i {
+      position: absolute;
+      top: 8px;
+      left: 0;
+      width: 25px;
+      text-align: center;
+    }
+
+    padding-left: 25px;
+    padding-right: 10px;
+  }
+
   .focus_menu & {
     @media #{$medium-up} {
-      right: 30px;
+      right: 15px;
     }
 
     @media #{$small-only} {
@@ -34,17 +49,19 @@
   }
 
   @media #{$small-only} {
+    @include grid-column(12);
     display: none;
   }
 
   a {
     display: block;
-    padding: 8px 5px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     color: #333;
     font-size: 12px;
-  }
 
-  .row:hover {
-    background: #f7f7f7;
+    &:hover {
+      background: #f7f7f7;
+    }
   }
 }

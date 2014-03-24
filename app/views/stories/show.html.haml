@@ -4,13 +4,12 @@
       = @story.title
 
       = link_to @story, method: :delete, title: "Delete story" do
-        %i.fa.fa-times
-        
+        %i.fa.fa-trash-o
 
     - if @child_story_stories.any?
 
       %h4
-        Sub-stories
+        Inbox
 
       - @child_story_stories.each do |child_story_story|
         .row.story
@@ -18,7 +17,7 @@
             .row
               .large-1.small-2.columns
                 = link_to child_story_story.child_story, class: 'button tiny radius expand' do
-                  \##{child_story_story.child_story.id}
+                  = child_story_story.child_story.id
               
               .large-10.small-8.columns
                 %h5
@@ -29,13 +28,19 @@
                 = link_to '#', class: "story_menu_toggle button tiny secondary expand" do
                   %i.fa.fa-sort-asc
 
-            .row.story_menu_menu
-              .large-12.columns
-                .row
-                  .large-12.columns
-                    = link_to child_story_story, method: :delete, title: "Unnest story", class: 'destroy_child_story_story' do
-                      %i.fa.fa-level-up
-                      Unnest Child
+          .story_menu_menu
+            - if false
+              = link_to child_story_story, method: :delete, title: 'Prioritize' do
+                %i.fa.fa-level-up
+                Prioritize
+
+            = link_to child_story_story, method: :delete, title: 'Unnest story', class: 'destroy_child_story_story' do
+              %i.fa.fa-times
+              Unnest Child
+
+            = link_to child_story_story.child_story, method: :delete, title: 'Delete Story' do
+              %i.fa.fa-trash-o
+              Delete Story
 
     %h4
       Add Sub-story

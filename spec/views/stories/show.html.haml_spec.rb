@@ -56,11 +56,11 @@ describe 'stories/show.html.haml' do
     end
 
     specify do
-      rendered.should have_css 'h4', text: 'Sub-stories'
+      rendered.should have_css 'h4', text: 'Inbox'
     end
 
     specify do
-      rendered.should have_link "##{child_story.id}", href: url_for(child_story)
+      rendered.should have_link "#{child_story.id}", href: url_for(child_story)
     end
 
     specify do
