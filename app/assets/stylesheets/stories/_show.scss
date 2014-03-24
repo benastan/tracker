@@ -1,0 +1,67 @@
+.edit_story {
+  button {
+    white-space: nowrap;
+  }
+}
+
+.story_menu_toggle {
+  @include button($bg: $secondary-color, $radius: $button-radius, $full-width: true);
+}
+
+.story_menu {
+  background: white;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+
+  > a {
+    position: relative;
+
+    i {
+      position: absolute;
+      top: 8px;
+      left: 0;
+      width: 25px;
+      text-align: center;
+    }
+
+    padding-left: 25px;
+    padding-right: 10px;
+  }
+
+  .focus_menu & {
+    @media #{$medium-up} {
+      right: 15px;
+    }
+
+    @media #{$small-only} {
+      display: block;
+    }
+  }
+  
+  @media #{$medium-up} {
+    position: absolute;
+    z-index: 1;
+    right: 9999px;
+    top: 38px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    white-space: nowrap;  
+  }
+
+  @media #{$small-only} {
+    @include grid-column(12);
+    display: none;
+  }
+
+  a {
+    display: block;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    color: #333;
+    font-size: 12px;
+
+    &:hover {
+      background: #f7f7f7;
+    }
+  }
+}

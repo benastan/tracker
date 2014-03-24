@@ -1,0 +1,90 @@
+.row
+  #show_story.large-12.columns
+    .row
+      .small-9.columns
+        = simple_form_for @story do |f|
+          .row
+            .small-10.columns
+              = f.input_field :title
+
+            .small-2.columns
+              = f.submit "Save", class: 'small button radius expand'
+
+      .small-2.columns
+        = simple_form_for @story do |f|
+          - if @story.started_at.nil?
+            = f.hidden_field :started_at, value: Time.new
+
+            %button{ class: 'button small secondary radius' }
+              %i.fa.fa-play
+              Start
+
+          - elsif @story.finished_at.nil?
+            = f.hidden_field :finished_at, value: Time.new
+
+            %button{ class: 'button small secondary radius' }
+              %i.fa.fa-stop
+              Finish
+
+          - elsif @story.closed_at.nil?
+            = f.hidden_field :closed_at, value: Time.new
+
+            %button{ class: 'button small secondary radius' }
+              %i.fa.fa-eject
+              Close
+
+          - else
+            = f.hidden_field :started_at, value: ''
+
+            = f.hidden_field :finished_at, value: ''
+
+            = f.hidden_field :closed_at, value: ''
+
+            %button{ class: 'button small secondary radius', title: 'Click to reset status' }
+              Closed
+
+      .small-1.columns
+        = link_to '#', class: 'button small alert expand radius', title: 'Delete Story' do
+          %i.fa.fa-trash-o
+      
+
+    - if @child_story_stories.any?
+
+      %h4
+        Inbox
+
+      - @child_story_stories.each do |child_story_story|
+        .row.story
+          .large-12.columns
+            .row
+              .large-1.small-2.columns
+                = link_to child_story_story.child_story, class: 'button tiny radius expand' do
+                  = child_story_story.child_story.id
+              
+              .large-10.small-8.columns
+                %h5
+
+                  = child_story_story.child_story.title
+
+              .large-1.small-2.columns
+                = link_to '#', class: "story_menu_toggle button tiny secondary expand" do
+                  %i.fa.fa-sort-asc
+
+          .story_menu
+            - if false
+              = link_to child_story_story, method: :delete, title: 'Prioritize' do
+                %i.fa.fa-level-up
+                Prioritize
+
+            = link_to child_story_story, method: :delete, title: 'Unnest story' do
+              %i.fa.fa-times
+              Unnest Child
+
+            = link_to child_story_story.child_story, method: :delete, title: 'Delete Story' do
+              %i.fa.fa-trash-o
+              Delete Story
+
+    %h4
+      Add Sub-story
+      
+    = render 'story_stories/form'

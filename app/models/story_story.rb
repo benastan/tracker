@@ -1,9 +1,12 @@
 class StoryStory < ActiveRecord::Base
 	belongs_to :parent_story, class_name: :Story
 	belongs_to :child_story, class_name: :Story
-  validates :parent_story_id, :child_story_id, presence: true
-  validates :parent_story_id, uniqueness: { scope: :child_story_id }
+  validates :parent_story_id, presence: true
+  validates :child_story_id, presence: true, if: -> { ! child_story.try(:new_record?) }
+  validates :parent_story_id, uniqueness: { scope: :child_story_id }, if: -> { ! child_story.try(:new_record?) }
 
+  accepts_nested_attributes_for :child_story
+  
   before_create do
     invalid_parent_story_stories = StoryStory.parent_story_stories_of(parent_story).where(parent_story: child_story)
 

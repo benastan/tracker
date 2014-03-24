@@ -1,44 +1,17 @@
-$('#stories_index').each(function() {
-  $storiesIndexRoot = $(this)
+$('.story_menu_toggle').each(function() {
+  var $story, $toggle;
 
-  $stories = $storiesIndexRoot.children('.story')
+  $toggle = $(this);
 
-  $stories.each(function() {
-    var view;
+  $story = $toggle.parents('.story');
 
-    view = new IndexStory({
-      el: this
-    });
+  $story.on('click', '.story_menu_toggle', function() {
+    $story.toggleClass('focus_menu');
 
-    view.$el.find('form').on({
-      'ajax:success': function(storyStory) {
-        var $form, $check, html;
-        
-        $form = $(this);
-        $check = $form.find('.showOnSuccess');
-
-        $check.show();
-
-        function hideCheck() {
-          $check.fadeOut()
-        }
-
-        setTimeout(hideCheck, 1000);
-      }
-    });
-  });
-  
-  $storiesIndexRoot.sortable({
-    forceHelperSize: false,
-    cursorAt: {
-      left: 50,
-      top: 50
-    }
+    return false;
   });
 
-  $storiesIndexRoot.disableSelection();
-
-  $storiesIndexRoot.on('sortupdate', function(e, ui) {
-    $(ui.item).triggerHandler('sortupdate', arguments);
+  $(document).on('click', function() {
+    $story.toggleClass('focus_menu', false);
   });
 });

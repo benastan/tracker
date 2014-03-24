@@ -14,7 +14,11 @@
   <body>
 
     <div>
-      <%= yield %>
+      <% if content_for?(:content) %>
+        <%= yield :content %>
+      <% else %>
+        <%= yield %>
+      <% end %>
     </div>
     
     <%= javascript_include_tag "application" %>

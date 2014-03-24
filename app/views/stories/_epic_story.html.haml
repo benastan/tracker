@@ -1,0 +1,19 @@
+= div_for(epic_story) do
+  %h4
+    = epic_story.title
+    - if story_order.story_order_positions.where(story: epic_story).any?
+      = simple_form_for story_order.story_order_positions.find_by(story: epic_story), remote: true do |f|
+        = f.hidden_field :position
+        = f.submit 'Change Position', class: 'hide', data: { :'disable-with' => 'Saving...' }
+        %i.fa.fa-check.showOnSuccess
+
+  %ul
+    %h6 Top Priorities:
+    = content_tag_for(:li, epic_story.child_stories) do |child_story|
+      = child_story.title
+
+  = link_to 'javascript:void(0)', class: 'toggle hide' do
+    %i.fa.fa-sort-asc
+
+  = link_to 'javascript:void(0)', class: 'toggle' do
+    %i.fa.fa-sort-desc

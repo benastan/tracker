@@ -1,0 +1,46 @@
+#stories_sidebar.medium-4.columns
+  %header.sidebar_header
+    = link_to 'Home', :root
+    = link_to 'New Story', :new_story, class: 'tiny radius button'
+
+  %ul.sidebar_content
+    - if @epic_stories.any?
+      %li
+        %h2
+          Epic
+        
+        %ul#epic_stories_list
+
+          - @epic_stories.each do |story|
+
+            = content_tag_for :li, story do
+
+              = link_to story do
+                - if story.finished_at.present? && ! story.closed_at.present?
+                  %i.fa.fa-circle.yellow
+
+                - elsif story.started_at.present? && ! story.closed_at.present?
+                  %i.fa.fa-circle.green
+
+                = story.title
+
+    - if @unblocked_stories.any?
+      %li
+        %h2
+          Unblocked
+        
+        %ul#unblocked_stories_list
+
+          - @unblocked_stories.each do |story|
+
+            = content_tag_for :li, story do
+
+              = link_to story do
+                - if story.finished_at.present? && ! story.closed_at.present?
+                  %i.fa.fa-circle.yellow
+
+                - elsif story.started_at.present? && ! story.closed_at.present?
+                  %i.fa.fa-circle.green
+                
+                = story.title
+                  

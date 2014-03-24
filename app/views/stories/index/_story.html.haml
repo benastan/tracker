@@ -1,0 +1,32 @@
+= div_for(story, data: { id: story.id, title: story.title }) do
+  %h4
+    = link_to story.title, story
+
+    = simple_form_for story.child_story_stories.new, remote: true do |f|
+      = f.hidden_field :parent_story_id
+      = f.hidden_field :child_story_id
+      = f.submit 'Add Child Story', class: 'hide', data: { :'disable-with' => 'Saving...' }
+      %i.fa.fa-check.showOnSuccess
+
+  - if story.blocking?
+    %ul.story_parent_stories
+      %h6 Blocks:
+      = content_tag_for(:li, story.parent_stories) do |child_story|
+        = child_story.title
+
+  - if story.blocked?
+    %ul.story_child_stories
+      %h6 Top Priorities:
+      = content_tag_for(:li, story.child_stories) do |child_story|
+        = child_story.title
+      %li.childStoryHint
+  - else
+    %ul.story_child_stories.hide
+      %h6 Top Priorities:
+      %li.childStoryHint
+
+  / = link_to 'javascript:void(0)', class: 'toggle hide' do
+  /   %i.fa.fa-sort-asc
+
+  / = link_to 'javascript:void(0)', class: 'toggle' do
+  /   %i.fa.fa-sort-desc
