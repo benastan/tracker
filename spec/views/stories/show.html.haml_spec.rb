@@ -1,11 +1,20 @@
 require 'spec_helper'
 
 describe 'stories/show.html.haml' do
+  let(:started_at) { nil }
+
+  let(:finished_at) { nil }
+
+  let(:closed_at) { nil }
+
   let(:child_story_stories) { [] }
 
   let(:story) do
     create :story,
-      title: 'Story'
+      title: 'Story',
+      started_at: started_at,
+      finished_at: finished_at,
+      closed_at: closed_at
   end
 
   let(:child_story) do
@@ -43,11 +52,82 @@ describe 'stories/show.html.haml' do
   specify do
     rendered.should have_css "#edit_story_#{story.id}"
   end
-  
   specify do
     rendered.should have_css '#story_title[value="Story"]'
   end
   
+  specify do
+    rendered.should have_css "#edit_story_#{story.id} input[type='submit'][value='Save']"
+  end
+
+  context 'when the story is not started' do
+    specify do
+      rendered.should have_css "#edit_story_#{story.id} input[name='story[started_at]']"
+    end
+
+    specify do
+      rendered.should_not have_css "#edit_story_#{story.id} input[name='story[finished_at]']"
+    end
+
+    specify do
+      rendered.should_not have_css "#edit_story_#{story.id} input[name='story[closed_at]']"
+    end
+  end
+
+  context 'when the story is started and not finished' do
+    let(:started_at) { Time.new }
+
+    specify do
+      rendered.should_not have_css "#edit_story_#{story.id} input[name='story[started_at]']"
+    end
+
+    specify do
+      rendered.should have_css "#edit_story_#{story.id} input[name='story[finished_at]']"
+    end
+
+    specify do
+      rendered.should_not have_css "#edit_story_#{story.id} input[name='story[closed_at]']"
+    end
+  end
+
+  context 'when the story is started and finished, and not closed' do
+    let(:started_at) { Time.new }
+    
+    let(:finished_at) { Time.new }
+
+    specify do
+      rendered.should_not have_css "#edit_story_#{story.id} input[name='story[started_at]']"
+    end
+
+    specify do
+      rendered.should_not have_css "#edit_story_#{story.id} input[name='story[finished_at]']"
+    end
+
+    specify do
+      rendered.should have_css "#edit_story_#{story.id} input[name='story[closed_at]']"
+    end
+  end
+
+  context 'when the story is started, finished and closed' do
+    let(:started_at) { Time.new }
+    
+    let(:finished_at) { Time.new }
+
+    let(:closed_at) { Time.new }
+
+    specify do
+      rendered.should have_css "#edit_story_#{story.id} input[name='story[started_at]']"
+    end
+
+    specify do
+      rendered.should have_css "#edit_story_#{story.id} input[name='story[finished_at]']"
+    end
+
+    specify do
+      rendered.should have_css "#edit_story_#{story.id} input[name='story[closed_at]']"
+    end
+  end
+
   context 'when there are no child stories' do
     specify do
       rendered.should_not have_css 'h4', text: 'Sub-stories'

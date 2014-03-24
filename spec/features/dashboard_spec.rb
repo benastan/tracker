@@ -58,7 +58,17 @@ feature 'dashboard' do
 
     page.should_not have_css '#show_story .story', text: 'Hello, Globe'
 
-    click_on 'Delete story'
+    click_on 'Start'
+
+    click_on 'Finish'
+    
+    click_on 'Close'
+
+    click_on 'Closed'
+
+    page.should have_css 'button', text: 'Start'
+
+    click_on 'Delete Story'
 
     page.should_not have_content 'Hello, World'
   end

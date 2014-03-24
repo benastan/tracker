@@ -57,7 +57,7 @@ class StoriesController < ApplicationController
   def update
     story = Story.find(params[:id])
 
-    story_attributes = params.require(:story).permit(:title)
+    story_attributes = params.require(:story).permit(:title, :started_at, :finished_at, :closed_at)
 
     story.update_attributes(story_attributes)
     

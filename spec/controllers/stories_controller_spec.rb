@@ -203,9 +203,21 @@ describe StoriesController do
     end
 
     specify do
-      patch(:update, id: 1, story: { title: 'some title' })
+      story_attributes = {
+        title: 'some title',
+        started_at: 'right now',
+        finished_at: 'left now',
+        closed_at: 'down now'
+      }
 
-      story.should have_received(:update_attributes).with('title' => 'some title')
+      patch(:update, id: 1, story: story_attributes)
+
+      story.should have_received(:update_attributes).with(
+        'title' => 'some title',
+        'started_at' => 'right now',
+        'finished_at' => 'left now',
+        'closed_at' => 'down now'
+      )
     end
 
     specify do

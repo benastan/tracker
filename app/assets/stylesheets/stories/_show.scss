@@ -1,14 +1,14 @@
-
-.story_menu {
-  position: relative;
-  white-space: nowrap;
+.edit_story {
+  button {
+    white-space: nowrap;
+  }
 }
 
 .story_menu_toggle {
   @include button($bg: $secondary-color, $radius: $button-radius, $full-width: true);
 }
 
-.story_menu_menu {
+.story_menu {
   background: white;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;

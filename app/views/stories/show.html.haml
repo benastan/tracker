@@ -1,7 +1,7 @@
 .row
   #show_story.large-12.columns
     .row
-      .small-11.columns
+      .small-9.columns
         = simple_form_for @story do |f|
           .row
             .small-10.columns
@@ -10,9 +10,43 @@
             .small-2.columns
               = f.submit "Save", class: 'small button radius expand'
 
+      .small-2.columns
+        = simple_form_for @story do |f|
+          - if @story.started_at.nil?
+            = f.hidden_field :started_at, value: Time.new
+
+            %button{ class: 'button small secondary radius' }
+              %i.fa.fa-play
+              Start
+
+          - elsif @story.finished_at.nil?
+            = f.hidden_field :finished_at, value: Time.new
+
+            %button{ class: 'button small secondary radius' }
+              %i.fa.fa-stop
+              Finish
+
+          - elsif @story.closed_at.nil?
+            = f.hidden_field :closed_at, value: Time.new
+
+            %button{ class: 'button small secondary radius' }
+              %i.fa.fa-eject
+              Close
+
+          - else
+            = f.hidden_field :started_at, value: ''
+
+            = f.hidden_field :finished_at, value: ''
+
+            = f.hidden_field :closed_at, value: ''
+
+            %button{ class: 'button small secondary radius', title: 'Click to reset status' }
+              Closed
+
       .small-1.columns
-        = link_to @story, method: :delete, title: "Delete story" do
+        = link_to '#', class: 'button small alert expand radius', title: 'Delete Story' do
           %i.fa.fa-trash-o
+      
 
     - if @child_story_stories.any?
 
@@ -32,7 +66,7 @@
 
                   = child_story_story.child_story.title
 
-              .large-1.small-2.columns.story_menu
+              .large-1.small-2.columns
                 = link_to '#', class: "story_menu_toggle button tiny secondary expand" do
                   %i.fa.fa-sort-asc
 
