@@ -70,6 +70,6 @@ feature 'dashboard' do
 
     click_on 'Delete Story'
 
-    page.should_not have_content 'Hello, World'
+    page.should_not have_content 'Hello, Pope'
   end
 end

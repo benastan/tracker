@@ -60,6 +60,10 @@ describe 'stories/show.html.haml' do
     rendered.should have_css "#edit_story_#{story.id} input[type='submit'][value='Save']"
   end
 
+  specify do
+    rendered.should have_css "a[href='#{url_for(story)}'][title='Delete Story'][data-method='delete']"
+  end
+
   context 'when the story is not started' do
     specify do
       rendered.should have_css "#edit_story_#{story.id} input[name='story[started_at]']"

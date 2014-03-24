@@ -44,7 +44,7 @@
               Closed
 
       .small-1.columns
-        = link_to '#', class: 'button small alert expand radius', title: 'Delete Story' do
+        = link_to @story, class: 'button small alert expand radius', title: 'Delete Story', method: :delete do
           %i.fa.fa-trash-o
       
 
