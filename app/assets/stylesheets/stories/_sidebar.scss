@@ -15,6 +15,21 @@
     padding: 5px;
   }
 
+  .fa-circle {
+    float: right;
+    position: relative;
+    top: 2px;
+    text-shadow: 0 1px 1px #bbb;
+
+    &.yellow {
+      color: yellow;
+    }
+
+    &.green {
+      color: green;
+    }
+  }
+
   > .sidebar_content {
     > li {
       padding-bottom: 10px;
