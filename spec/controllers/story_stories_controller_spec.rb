@@ -22,6 +22,13 @@ describe StoryStoriesController do
       action: 'new',
       story_id: '1')
   end
+  
+  it do
+    should route(:delete, '/story_stories/1').to(
+      controller: 'story_stories',
+      action: 'destroy',
+      id: '1')
+  end
 
   describe '#create' do
     let!(:parent_story) do
@@ -96,6 +103,41 @@ describe StoryStoriesController do
       get(:new, story_id: parent_story.id)
 
       assigns(:story_story).child_story.should == new_story
+    end
+  end
+
+  describe '#destroy' do
+    let(:parent_story) do
+      create :story
+    end
+
+    let(:child_story) do
+      create :story
+    end
+
+    let!(:story_story) do
+      StoryStory.create(
+        parent_story: parent_story,
+        child_story: child_story
+      )
+    end
+
+    specify do
+      delete(:destroy, id: story_story.id).should redirect_to :root
+    end
+
+    specify do
+      delete(:destroy, id: story_story.id)
+ 
+      expect do
+        StoryStory.find(story_story.id)
+      end.to raise_error
+    end
+
+    specify do
+      expect do
+        delete(:destroy, id: story_story.id)
+      end.to change { StoryStory.count }.by(-1)
     end
   end
 end

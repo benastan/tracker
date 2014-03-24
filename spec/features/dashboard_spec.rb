@@ -34,14 +34,26 @@ feature 'dashboard' do
 
     click_on 'Create Story'
 
-    page.should have_content 'Hello, World'
-
-    click_on 'Hello, World'
+    within '#stories_index' do
+      click_on 'Hello, World'
+    end
     
     fill_in 'story_story_child_story_attributes_title', with: 'Hello, Globe'
 
     click_on 'Create Story'
 
     page.should have_content 'Hello, Globe'
+
+    first('.story_menu_toggle').click
+
+    first('.destroy_child_story_story').click
+
+    first(:link, 'Hello, World').click
+
+    page.should_not have_css '#show_story .story', text: 'Hello, Globe'
+
+    first('h3 a').click
+
+    page.should_not have_content 'Hello, World'
   end
 end

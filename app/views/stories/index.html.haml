@@ -1,2 +1,10 @@
-#stories_index
-  Blah
+.row
+  #stories_index.large-12.columns
+    %h3
+      Unblocked Stories
+
+    - @unblocked_stories.each do |unblocked_story|
+      = div_for unblocked_story do
+        = link_to unblocked_story do
+          %h5
+            = unblocked_story.title

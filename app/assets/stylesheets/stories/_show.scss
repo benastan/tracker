@@ -1,0 +1,50 @@
+
+.story_menu {
+  position: relative;
+  white-space: nowrap;
+}
+
+.story_menu_toggle {
+  @include button($bg: $secondary-color, $radius: $button-radius, $full-width: true);
+}
+
+.story_menu_menu {
+  background: white;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+
+  .focus_menu & {
+    @media #{$medium-up} {
+      right: 30px;
+    }
+
+    @media #{$small-only} {
+      display: block;
+    }
+  }
+  
+  @media #{$medium-up} {
+    position: absolute;
+    z-index: 1;
+    right: 9999px;
+    top: 38px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    white-space: nowrap;  
+  }
+
+  @media #{$small-only} {
+    display: none;
+  }
+
+  a {
+    display: block;
+    padding: 8px 5px;
+    color: #333;
+    font-size: 12px;
+  }
+
+  .row:hover {
+    background: #f7f7f7;
+  }
+}

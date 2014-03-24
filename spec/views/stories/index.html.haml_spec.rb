@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'stories/index.html.haml' do
   let(:unblocked_story) { FactoryGirl.build(:story, id: 1, title: 'Some Unblocked Story') }
   
-  let(:epic_story) { FactoryGirl.build(:story, id: 2, title: 'Some Unblocked Story') }
+  let(:epic_story) { FactoryGirl.build(:story, id: 2, title: 'Some Blocked Story') }
   
   before do
     assign :unblocked_stories, [ unblocked_story ]
@@ -11,5 +11,11 @@ describe 'stories/index.html.haml' do
     assign :epic_stories, [ epic_story ]
   end
 
-  specify { render.should have_css '#stories_index', text: 'Blah' }
+  specify do
+    render.should have_css '#stories_index h3', text: 'Unblocked Stories'
+  end
+
+  specify do
+    render.should have_css '#stories_index .story h5', text: 'Some Unblocked Story'
+  end
 end

@@ -40,7 +40,7 @@ class StoriesController < ApplicationController
       format.html do
         @parent_stories = @story.parent_stories
         
-        @child_stories = @story.child_stories
+        @child_story_stories = @story.child_story_stories
 
         @story_story = StoryStory.new(
           parent_story: @story,
@@ -52,7 +52,15 @@ class StoriesController < ApplicationController
         render json: @story.serializable_hash(includes: [ :child_stories, :parent_stories ])
       end
     end
-  end  
+  end
+
+  def destroy
+    story = Story.find(params[:id])
+
+    story.destroy!
+
+    redirect_to :root
+  end
 
   protected
 

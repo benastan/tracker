@@ -14,6 +14,14 @@ class StoryStoriesController < ApplicationController
     )
   end
 
+  def destroy
+    story_story = StoryStory.find(params[:id])
+
+    story_story.destroy
+
+    redirect_to :root
+  end
+
   protected
 
   def permitted_params

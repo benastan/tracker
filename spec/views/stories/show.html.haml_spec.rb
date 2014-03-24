@@ -1,16 +1,22 @@
 require 'spec_helper'
 
 describe 'stories/show.html.haml' do
-  let(:child_stories) { [] }
+  let(:child_story_stories) { [] }
+
+  let(:story) do
+    create :story,
+      title: 'Story'
+  end
 
   let(:child_story) do
     create :story,
       title: "Child Story"
   end
 
-  let(:story) do
-    create :story,
-      title: 'Story'
+  let(:child_story_story) do
+    story.child_story_stories.create(
+      child_story: child_story 
+    )
   end
 
   let(:story_story) do
@@ -21,7 +27,7 @@ describe 'stories/show.html.haml' do
   end
 
   before do
-    assign :child_stories, child_stories
+    assign :child_story_stories, child_story_stories
     
     assign :story, story
     
@@ -45,12 +51,16 @@ describe 'stories/show.html.haml' do
   end
 
   context 'when there are child stories' do
-    let(:child_stories) do
-      [ child_story ]
+    let(:child_story_stories) do
+      [ child_story_story ]
     end
 
     specify do
       rendered.should have_css 'h4', text: 'Sub-stories'
+    end
+
+    specify do
+      rendered.should have_link "##{child_story.id}", href: url_for(child_story)
     end
 
     specify do
@@ -59,7 +69,15 @@ describe 'stories/show.html.haml' do
 
     specify do
       rendered.should have_css '.story h5', count: 1, text: 'Child Story'
-    end      
+    end
+
+    specify do
+      rendered.should have_css 'a.story_menu_toggle .fa-sort-asc'
+    end
+
+    specify do
+      rendered.should have_link "Unnest Child", href: url_for(child_story_story)
+    end
   end
 
   describe 'child story form' do

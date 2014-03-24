@@ -13,6 +13,10 @@ describe StoriesController do
     should route(:get, '/stories/1').to(controller: :stories, action: :show, id: '1')
   end
 
+  it do
+    should route(:delete, '/stories/1').to(controller: :stories, action: :destroy, id: '1')
+  end
+
   describe '#index' do
     let(:fake_stories_relation) do
       double 'stories',
@@ -107,7 +111,7 @@ describe StoriesController do
       double 'story',
         serializable_hash: fake_hash,
         parent_stories: 'kiddo',
-        child_stories: 'kid A'
+        child_story_stories: 'kid A'
     end
 
     before do
@@ -148,7 +152,7 @@ describe StoriesController do
       specify do
         get(:show, id: 'asdfasdfa')
 
-        assigns(:child_stories).should == 'kid A'
+        assigns(:child_story_stories).should == 'kid A'
       end
 
       specify do
@@ -177,6 +181,23 @@ describe StoriesController do
       specify do
         get(:show, id: 'asdfas', format: :json).body.should == "shmargis"
       end
+    end
+  end
+
+  describe 'DELETE destroy' do
+    let(:story) do
+      double 'story',
+        destroy!: true
+    end
+    
+    before do
+      Story.stub(find: story)
+    end
+
+    specify do
+      delete(:destroy, id: 1)
+
+      story.should have_received(:destroy!)
     end
   end
 end
