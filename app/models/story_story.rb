@@ -39,5 +39,35 @@ WITH RECURSIVE parent_stories(id, parent_story_id, child_story_id) AS (
 ) SELECT id from parent_stories
 SQL
     end
+
+    def child_started
+      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
+        .where('child_stories.started_at < (?)', Time.new)
+    end
+
+    def child_finished
+      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
+        .where('child_stories.finished_at < (?)', Time.new)
+    end
+
+    def child_closed
+      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
+        .where('child_stories.closed_at < (?)', Time.new)
+    end
+
+    def child_unstarted
+      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
+        .where('child_stories.started_at is NULL or child_stories.started_at > (?)', Time.new)
+    end
+
+    def child_unfinished
+      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
+        .where('child_stories.finished_at is NULL or child_stories.finished_at > (?)', Time.new)
+    end
+
+    def child_unclosed
+      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
+        .where('child_stories.closed_at is NULL or child_stories.closed_at > (?)', Time.new)
+    end
   end
 end

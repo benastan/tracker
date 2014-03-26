@@ -46,45 +46,33 @@
       .small-1.columns
         = link_to @story, class: 'button small alert expand radius', title: 'Delete Story', method: :delete do
           %i.fa.fa-trash-o
-      
 
-    - if @child_story_stories.any?
+    - if @unstarted_child_story_stories.any?
 
       %h4
-        Inbox
+        Unstarted
 
-      - @child_story_stories.each do |child_story_story|
-        .row.story
-          .large-12.columns
-            .row
-              .large-1.small-2.columns
-                = link_to child_story_story.child_story, class: 'button tiny radius expand' do
-                  = child_story_story.child_story.id
-              
-              .large-10.small-8.columns
-                %h5
+      = render partial: 'child_story_story', collection: @unstarted_child_story_stories
+            
+    - if @started_child_story_stories.any?
+      %h4
+        Started
 
-                  = child_story_story.child_story.title
-
-              .large-1.small-2.columns
-                = link_to '#', class: "story_menu_toggle button tiny secondary expand" do
-                  %i.fa.fa-sort-asc
-
-          .story_menu
-            - if false
-              = link_to child_story_story, method: :delete, title: 'Prioritize' do
-                %i.fa.fa-level-up
-                Prioritize
-
-            = link_to child_story_story, method: :delete, title: 'Unnest story' do
-              %i.fa.fa-times
-              Unnest Child
-
-            = link_to child_story_story.child_story, method: :delete, title: 'Delete Story' do
-              %i.fa.fa-trash-o
-              Delete Story
+      = render partial: 'child_story_story', collection: @started_child_story_stories
 
     %h4
       Add Sub-story
       
     = render 'story_stories/form'
+
+    - if @finished_child_story_stories.any?
+      %h4
+        Finished
+
+      = render partial: 'child_story_story', collection: @finished_child_story_stories
+   
+    - if @closed_child_story_stories.any?
+      %h4
+        Closed
+
+      = render partial: 'child_story_story', collection: @closed_child_story_stories

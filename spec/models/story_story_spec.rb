@@ -5,7 +5,7 @@ describe StoryStory do
 
   let(:child_story) { create :story }
 
-  let!(:story_story) do
+  let(:story_story) do
     StoryStory.create(
       parent_story_id: parent_story.id,
       child_story_id: child_story.id
@@ -77,6 +77,80 @@ describe StoryStory do
   describe '#serializable_hash' do
     specify do
       story_story.serializable_hash['parent_story'].should == parent_story.serializable_hash
+    end
+  end
+
+  describe 'scopes' do
+    let(:started_child) do
+      create :story,
+        started_at: Time.new
+    end
+
+    let(:finished_child) do
+      create :story,
+        finished_at: Time.new
+    end
+
+    let(:closed_child) do
+      create :story,
+        closed_at: Time.new
+    end
+
+    let(:child_started_story_story) do
+      create :story_story,
+        child_story: started_child
+    end
+
+    let(:child_finished_story_story) do
+      create :story_story,
+        child_story: finished_child
+    end
+
+    let(:child_closed_story_story) do
+      create :story_story,
+        child_story: closed_child
+    end
+
+    before do
+      child_finished_story_story.child_story.update_attribute(:finished_at, Time.now)
+      child_started_story_story.child_story.update_attribute(:started_at, Time.now)
+      child_closed_story_story.child_story.update_attribute(:closed_at, Time.now)
+    end
+    
+    describe '.child_started' do
+      specify do
+        StoryStory.child_started.should == [ child_started_story_story ]
+      end
+    end
+
+    describe '.child_finished' do
+      specify do
+        StoryStory.child_finished.should == [ child_finished_story_story ]
+      end
+    end
+
+    describe '.child_closed' do
+      specify do
+        StoryStory.child_closed.should == [ child_closed_story_story ]
+      end
+    end
+
+    describe '.child_unstarted' do
+      specify do
+        StoryStory.child_unstarted.should == [ child_finished_story_story, child_closed_story_story ]
+      end
+    end
+
+    describe '.child_unfinished' do
+      specify do
+        StoryStory.child_unfinished.should == [ child_started_story_story, child_closed_story_story ]
+      end
+    end
+
+    describe '.child_unclosed' do
+      specify do
+        StoryStory.child_unclosed.should == [ child_finished_story_story, child_started_story_story ]
+      end
     end
   end
 end

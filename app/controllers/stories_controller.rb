@@ -40,7 +40,15 @@ class StoriesController < ApplicationController
       format.html do
         @parent_stories = @story.parent_stories
         
-        @child_story_stories = @story.child_story_stories
+        child_story_stories = @story.child_story_stories
+
+        @unstarted_child_story_stories = child_story_stories.child_unstarted.child_unfinished.child_unclosed
+        
+        @started_child_story_stories = child_story_stories.child_started.child_unfinished.child_unclosed
+
+        @finished_child_story_stories = child_story_stories.child_started.child_finished.child_unclosed
+
+        @closed_child_story_stories = child_story_stories.child_started.child_finished.child_closed
 
         @story_story = StoryStory.new(
           parent_story: @story,

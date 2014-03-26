@@ -7,7 +7,13 @@ describe 'stories/show.html.haml' do
 
   let(:closed_at) { nil }
 
-  let(:child_story_stories) { [] }
+  let(:started_child_story_stories) { [] }
+
+  let(:finished_child_story_stories) { [] }
+
+  let(:closed_child_story_stories) { [] }
+
+  let(:unstarted_child_story_stories) { [] }
 
   let(:story) do
     create :story,
@@ -35,12 +41,40 @@ describe 'stories/show.html.haml' do
     )
   end
 
+  shared_examples_for 'a child story story' do
+    specify do
+      rendered.should have_link "#{child_story.id}", href: url_for(child_story)
+    end
+
+    specify do
+      rendered.should have_css '.story', count: 1
+    end
+
+    specify do
+      rendered.should have_css '.story h5', count: 1, text: child_story.title
+    end
+
+    specify do
+      rendered.should have_css 'a.story_menu_toggle .fa-sort-asc'
+    end
+
+    specify do
+      rendered.should have_link "Unnest Child", href: url_for(child_story_story)
+    end
+  end
+
   before do
-    assign :child_story_stories, child_story_stories
-    
     assign :story, story
     
     assign :story_story, story_story
+    
+    assign :unstarted_child_story_stories, unstarted_child_story_stories
+
+    assign :started_child_story_stories, started_child_story_stories
+
+    assign :finished_child_story_stories, finished_child_story_stories
+
+    assign :closed_child_story_stories, closed_child_story_stories
 
     render
   end
@@ -139,32 +173,106 @@ describe 'stories/show.html.haml' do
   end
 
   context 'when there are child stories' do
-    let(:child_story_stories) do
-      [ child_story_story ]
+    describe 'started stories' do
+      context 'when there are no started stories' do
+        specify do
+          rendered.should_not have_css 'h4', text: 'Started'
+        end
+      end
+
+      context 'when there are started stories' do
+        let(:child_story) do
+          mock_model Story,
+            title: 'Started Story'
+        end
+
+        let(:child_story_story) do  
+          mock_model StoryStory,
+            child_story: child_story
+        end
+
+        let(:started_child_story_stories) do  
+          [ child_story_story ]
+        end
+        
+        specify do
+          rendered.should have_css 'h4', text: 'Started'
+        end
+
+        it_should_behave_like 'a child story story'
+      end
+    end
+    
+    describe 'finished stories' do
+      context 'when there are no finished stories' do
+        specify do
+          rendered.should_not have_css 'h4', text: 'Finished'
+        end
+      end
+
+      context 'when there are finished stories' do
+        let(:child_story) do
+          mock_model Story,
+            title: 'Finished Story'
+        end
+
+        let(:child_story_story) do  
+          mock_model StoryStory,
+            child_story: child_story
+        end
+
+        let(:finished_child_story_stories) do  
+          [ child_story_story ]
+        end
+        
+        specify do
+          rendered.should have_css 'h4', text: 'Finished'
+        end
+
+        it_should_behave_like 'a child story story'
+      end
     end
 
-    specify do
-      rendered.should have_css 'h4', text: 'Inbox'
+    describe 'closed stories' do
+      context 'when there are no closed stories' do
+        specify do
+          rendered.should_not have_css 'h4', text: 'Closed'
+        end
+      end
+
+      context 'when there are closed stories' do
+        let(:child_story) do
+          mock_model Story,
+            title: 'Closed Story'
+        end
+
+        let(:child_story_story) do  
+          mock_model StoryStory,
+            child_story: child_story
+        end
+
+        let(:closed_child_story_stories) do  
+          [ child_story_story ]
+        end
+        
+        specify do
+          rendered.should have_css 'h4', text: 'Closed'
+        end
+
+        it_should_behave_like 'a child story story'
+      end
     end
 
-    specify do
-      rendered.should have_link "#{child_story.id}", href: url_for(child_story)
-    end
+    describe 'unstarted' do
+      let(:unstarted_child_story_stories) do
+        [ child_story_story ]
+      end
 
-    specify do
-      rendered.should have_css '.story', count: 1
-    end
+      specify do
+        rendered.should have_css 'h4', text: 'Unstarted'
+      end
 
-    specify do
-      rendered.should have_css '.story h5', count: 1, text: 'Child Story'
-    end
-
-    specify do
-      rendered.should have_css 'a.story_menu_toggle .fa-sort-asc'
-    end
-
-    specify do
-      rendered.should have_link "Unnest Child", href: url_for(child_story_story)
+      it_should_behave_like 'a child story story'
     end
   end
 

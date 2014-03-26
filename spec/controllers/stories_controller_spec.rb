@@ -111,15 +111,36 @@ describe StoriesController do
         to_json: :shmargis
     end
 
+    let(:child_story_stories) do
+      double 'child story stories'
+    end
+
     let(:fake_story) do
       double 'story',
         serializable_hash: fake_hash,
         parent_stories: 'kiddo',
-        child_story_stories: 'kid A'
+        child_story_stories: child_story_stories
     end
 
     before do
       Story.stub(:find) { fake_story }
+
+      child_story_stories.stub(
+        child_unstarted: double(
+          child_unfinished: double(
+            child_unclosed: 'unstarted children'
+          )
+        ),
+        child_started: double(
+          child_unfinished: double(
+            child_unclosed: 'started children'
+          ),
+          child_finished: double(
+            child_unclosed: 'finished children',
+            child_closed: 'closed children'
+          )
+        )
+      )
     end
 
     context 'when the format is html' do
@@ -156,7 +177,25 @@ describe StoriesController do
       specify do
         get(:show, id: 'asdfasdfa')
 
-        assigns(:child_story_stories).should == 'kid A'
+        assigns(:unstarted_child_story_stories).should == 'unstarted children'
+      end
+
+      specify do
+        get(:show, id: 'asdfasdfa')
+
+        assigns(:started_child_story_stories).should == 'started children'
+      end
+
+      specify do
+        get(:show, id: 'asdfasdfa')
+
+        assigns(:finished_child_story_stories).should == 'finished children'
+      end
+
+      specify do
+        get(:show, id: 'asdfasdfa')
+
+        assigns(:closed_child_story_stories).should == 'closed children'
       end
 
       specify do
