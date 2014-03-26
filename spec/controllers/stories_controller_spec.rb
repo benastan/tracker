@@ -95,7 +95,7 @@ describe StoriesController do
     end
 
     specify do
-      post_create.should redirect_to :root
+      post_create.should redirect_to Story.last
     end
     
     specify do

@@ -28,9 +28,9 @@ class StoriesController < ApplicationController
   end
 
   def create
-    Story.create(permitted_params[:story])
+    story = Story.create(permitted_params[:story])
 
-    redirect_to :root
+    redirect_to story
   end
 
   def show

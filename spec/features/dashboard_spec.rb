@@ -33,10 +33,6 @@ feature 'dashboard' do
     fill_in 'story_title', with: 'Hello, World'
 
     click_on 'Create Story'
-
-    within '#stories_index' do
-      click_on 'Hello, World'
-    end
     
     fill_in 'story_story_child_story_attributes_title', with: 'Hello, Globe'
 
