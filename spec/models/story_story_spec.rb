@@ -91,30 +91,24 @@ describe StoryStory do
         finished_at: Time.new
     end
 
-    let(:closed_child) do
+    let!(:closed_child) do
       create :story,
         closed_at: Time.new
     end
 
-    let(:child_started_story_story) do
+    let!(:child_started_story_story) do
       create :story_story,
         child_story: started_child
     end
 
-    let(:child_finished_story_story) do
+    let!(:child_finished_story_story) do
       create :story_story,
         child_story: finished_child
     end
 
-    let(:child_closed_story_story) do
+    let!(:child_closed_story_story) do
       create :story_story,
         child_story: closed_child
-    end
-
-    before do
-      child_finished_story_story.child_story.update_attribute(:finished_at, Time.now)
-      child_started_story_story.child_story.update_attribute(:started_at, Time.now)
-      child_closed_story_story.child_story.update_attribute(:closed_at, Time.now)
     end
     
     describe '.child_started' do
@@ -149,7 +143,7 @@ describe StoryStory do
 
     describe '.child_unclosed' do
       specify do
-        StoryStory.child_unclosed.should == [ child_finished_story_story, child_started_story_story ]
+        StoryStory.child_unclosed.should == [ child_started_story_story, child_finished_story_story ]
       end
     end
   end

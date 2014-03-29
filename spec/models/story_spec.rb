@@ -122,4 +122,72 @@ describe Story do
   describe '.epic', simple_story_tree: true do
     specify { Story.epic.should =~ [ epic_story ] }
   end
+
+  describe 'started, finished, closed scopes' do
+    let!(:started_story) do
+      create :story,
+        started_at: Time.new - 1.hour
+    end
+
+    let!(:finished_story) do
+      create :story,
+        started_at: Time.new - 1.hour,
+        finished_at: Time.new - 1.hour
+    end
+
+    let!(:closed_story) do
+      create :story,
+        started_at: Time.new - 1.hour,
+        finished_at: Time.new - 1.hour,
+        closed_at: Time.new - 1.hour
+    end
+    
+    describe '.started' do
+      specify do
+        Story.started.should == [ started_story, finished_story, closed_story ]
+      end
+    end
+    
+    describe '.strict_started' do
+      specify do
+        Story.strict_started.should == [ started_story ]
+      end
+    end
+
+    describe '.finished' do
+      specify do
+        Story.finished.should == [ finished_story, closed_story ]
+      end
+    end
+
+    describe '.strict_finished' do
+      specify do
+        Story.strict_finished.should == [ finished_story ]
+      end
+    end
+
+    describe '.closed' do
+      specify do
+        Story.closed.should == [ closed_story ]
+      end
+    end
+
+    describe '.unstarted' do
+      specify do
+        Story.unstarted.should == []
+      end
+    end
+
+    describe '.unfinished' do
+      specify do
+        Story.unfinished.should == [ started_story ]
+      end
+    end
+
+    describe '.unclosed' do
+      specify do
+        Story.unclosed.should == [ started_story, finished_story ]
+      end
+    end
+  end
 end

@@ -41,33 +41,27 @@ SQL
     end
 
     def child_started
-      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
-        .where('child_stories.started_at < (?)', Time.new)
+      includes(:child_story).where("stories.id in (?)", Story.started).references(:child_story)
     end
 
     def child_finished
-      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
-        .where('child_stories.finished_at < (?)', Time.new)
+      includes(:child_story).where("stories.id in (?)", Story.finished).references(:child_story)
     end
 
     def child_closed
-      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
-        .where('child_stories.closed_at < (?)', Time.new)
+      includes(:child_story).where("stories.id in (?)", Story.closed).references(:child_story)
     end
 
     def child_unstarted
-      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
-        .where('child_stories.started_at is NULL or child_stories.started_at > (?)', Time.new)
+      includes(:child_story).where("stories.id in (?)", Story.unstarted).references(:child_story)
     end
 
     def child_unfinished
-      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
-        .where('child_stories.finished_at is NULL or child_stories.finished_at > (?)', Time.new)
+      includes(:child_story).where("stories.id in (?)", Story.unfinished).references(:child_story)
     end
 
     def child_unclosed
-      joins('INNER JOIN stories AS child_stories ON child_stories.id = story_stories.child_story_id')
-        .where('child_stories.closed_at is NULL or child_stories.closed_at > (?)', Time.new)
+      includes(:child_story).where("stories.id in (?)", Story.unclosed).references(:child_story)
     end
   end
 end

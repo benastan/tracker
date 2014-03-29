@@ -7,79 +7,94 @@ describe 'shared/stories/_sidebar.html.haml' do
 
   let(:closed_at) { nil }
 
-  let(:unblocked_story) do
-    FactoryGirl.build :story,
-      id: 1,
-      title: 'Some Unblocked Story',
-      started_at: Time.new,
-      finished_at: finished_at,
-      closed_at: closed_at
+  let(:unblocked_unstarted_stories) do
+    double 'unblocked unstarted stories collection',
+      any?: false
   end
   
-  let(:epic_story) do
-    FactoryGirl.build :story,
-      id: 2,
-      title: 'Some Unblocked Story',
-      started_at: started_at
+  let(:epic_stories) do
+    double 'epic stories collection',
+      any?: false
+  end
+
+  let(:started_stories) do
+    double 'started stories collection',
+      any?: false
   end
   
   before do
-    assign :unblocked_stories, [ unblocked_story ]
+    assign :unblocked_unstarted_stories, unblocked_unstarted_stories
     
-    assign :epic_stories, [ epic_story ]
-
-    render
+    assign :epic_stories, epic_stories
+    
+    assign :started_stories, started_stories
   end
 
-  specify { rendered.should have_css '#stories_sidebar a', text: 'New Story' }
+  specify { render.should have_css '#stories_sidebar a', text: 'New Story' }
 
-  specify { rendered.should have_link 'New Story', href: new_story_path }
+  specify { render.should have_link 'New Story', href: new_story_path }
   
-  specify { rendered.should have_css '#stories_sidebar' }
+  specify { render.should have_css '#stories_sidebar' }
   
-  specify { rendered.should have_css '#stories_sidebar .sidebar_content' }
+  specify { render.should have_css '#stories_sidebar .sidebar_content' }
 
   describe 'stories list' do
-    specify { rendered.should have_css '.sidebar_content li h2', text: 'Epic' }
-
-    context 'when a story is unstarted' do
-      specify { rendered.should_not have_css '#story_2 i.fa-circle.green' }
-      
-      specify { rendered.should_not have_css '#story_2 i.fa-circle.yellow' }
+    before do
+      view.stub(render_sidebar_index: '')
     end
-    
-    context 'when a story is started but not finished' do
-      let(:started_at) { Time.new }
 
-      specify { rendered.should have_css '#story_2 i.fa-circle.green' }
-      
-      specify { rendered.should_not have_css '#story_2 i.fa-circle.yellow' }
+    context 'when there are not epic stories' do
+      specify do
+        render
+
+        view.should_not have_received(:render_sidebar_index).with('Epic', epic_stories)
+      end
     end
-    
-    context 'when a story is started and finished' do
-      let(:finished_at) { Time.new }
 
-      specify { rendered.should_not have_css '#story_1 i.fa-circle.green' }
-      
-      specify { rendered.should have_css '#story_1 i.fa-circle.yellow' }
+    context 'when there are epic stories' do
+      before { epic_stories.stub(any?: true) }
+
+      specify do
+        render
+
+        view.should have_received(:render_sidebar_index).with('Epic', epic_stories)
+      end
     end
-        
-    context 'when a story is started, finished and closed' do
-      let(:finished_at) { Time.new }
 
-      let(:closed_at) { Time.new }
-      
-      specify { rendered.should_not have_css '#story_1 i.fa-circle.green' }
-      
-      specify { rendered.should_not have_css '#story_1 i.fa-circle.yellow' }
+    context 'when there are not unblocked, unstarted stories' do
+      specify do
+        render
+
+        view.should_not have_received(:render_sidebar_index).with('Unblocked, Unstarted', unblocked_unstarted_stories)
+      end
     end
-    
-    specify { rendered.should have_css '.sidebar_content li h2', text: 'Unblocked' }
-    
-    specify { rendered.should have_css '.sidebar_content li ul', count: 2 }
-    
-    specify { rendered.should have_css '#epic_stories_list li', count: 1 }
 
-    specify { rendered.should have_css '#unblocked_stories_list li', count: 1 }
+    context 'when there are unblocked, unstarted stories' do
+      before { unblocked_unstarted_stories.stub(any?: true) }
+
+      specify do
+        render
+
+        view.should have_received(:render_sidebar_index).with('Unblocked, Unstarted', unblocked_unstarted_stories)
+      end
+    end
+
+    context 'when there are not started stories' do
+      specify do
+        render
+
+        view.should_not have_received(:render_sidebar_index).with('Started', started_stories)
+      end
+    end
+
+    context 'when there are started stories' do
+      before { started_stories.stub(any?: true) }
+
+      specify do
+        render
+
+        view.should have_received(:render_sidebar_index).with('Started', started_stories)
+      end
+    end
   end
 end

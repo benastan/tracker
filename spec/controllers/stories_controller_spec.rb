@@ -22,48 +22,33 @@ describe StoriesController do
   end
 
   describe '#index' do
-    let(:fake_stories_relation) do
-      double 'stories',
-        to_json: '"all"',
-        unblocked: :unblocked,
-        epic: :epic
-    end
-
-    let!(:fake_story_order) do
-      double 'story_order',
-        stories: fake_stories_relation
-    end
-    
     before do
-      StoryOrder.stub(:first_or_create) { fake_story_order }
+      Story.stub(
+        unblocked: double('unblocked', unstarted: :'unblocked, unstarted'),
+        epic: :epic,
+        strict_started: :started,
+        strict_finished: :finished,
+        closed: :closed
+      )
     end
 
-    context 'when the format is json' do
+    describe 'before filter' do
       specify do
-        get(:index, format: :json, unblocked: true)
-
-        response.body.should == '"unblocked"'
-      end
-      
-      specify do
-        get(:index, format: :json, epic: true)
-
-        response.body.should == '"epic"'
-      end
-      
-      specify do
-        get(:index, format: :json)
-
-        response.body.should == '"all"'
-      end
-    end
-
-    context 'when the format is html' do
-      it 'orders on the default StoryOrder' do
         get(:index)
         
-        assigns[:unblocked_stories].should == :unblocked
+        assigns[:unblocked_unstarted_stories].should == :'unblocked, unstarted'
+      end
+
+      specify do
+        get(:index)
+        
         assigns[:epic_stories].should == :epic
+      end
+
+      specify do
+        get(:index)
+        
+        assigns[:started_stories].should == :started
       end
     end
   end
@@ -211,18 +196,6 @@ describe StoriesController do
           parent_story: fake_story,
           child_story: new_story
         )
-      end
-    end
-
-    context 'when the format is json' do
-      specify do
-        fake_story.should_receive(:serializable_hash).with(includes: [ :child_stories, :parent_stories ])
-
-        get(:show, id: 'asdfas', format: :json)
-      end
-
-      specify do
-        get(:show, id: 'asdfas', format: :json).body.should == "shmargis"
       end
     end
   end

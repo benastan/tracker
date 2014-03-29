@@ -5,9 +5,17 @@ describe StoriesHelper do
     specify do
       assign :epic_stories, []
 
-      assign :unblocked_stories, []
+      assign :unblocked_unstarted_stories, []
+      
+      assign :started_stories, []
       
       expect(helper.render_sidebar).to render_template 'shared/stories/_sidebar'
+    end
+  end
+
+  describe 'render_sidebar_index' do
+    specify do
+      expect(helper.render_sidebar_index('Headline', [])).to render_template 'shared/stories/sidebar/_index'
     end
   end
 end

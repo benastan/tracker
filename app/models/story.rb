@@ -61,6 +61,38 @@ class Story < ActiveRecord::Base
       where('(select count(id) from story_stories where story_stories.child_story_id = stories.id) = 0')
         .where('(select count(id) from story_stories where story_stories.parent_story_id = stories.id) > 0')
     end
+
+    def started
+      where('started_at < (?)', Time.new)
+    end
+
+    def finished
+      where('finished_at < (?)', Time.new)
+    end
+
+    def strict_started
+      started.unfinished.unclosed
+    end
+
+    def strict_finished
+      finished.unclosed
+    end
+
+    def closed
+      where('closed_at < (?)', Time.new)
+    end
+
+    def unstarted
+      where('started_at is NULL or started_at > (?)', Time.new)
+    end
+
+    def unfinished
+      where('finished_at is NULL or finished_at > (?)', Time.new)
+    end
+
+    def unclosed
+      where('closed_at is NULL or closed_at > (?)', Time.new)
+    end
   end
 end
 

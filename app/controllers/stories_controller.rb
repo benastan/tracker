@@ -2,25 +2,12 @@ class StoriesController < ApplicationController
   respond_to :json, :html
 
   before_filter do
-    @unblocked_stories = story_order.stories.unblocked
-    @epic_stories = story_order.stories.epic
+    @unblocked_unstarted_stories = Story.unblocked.unstarted
+    @epic_stories = Story.epic
+    @started_stories = Story.strict_started
   end
 
   def index
-    respond_to do |format|
-      format.html
-
-      format.json do
-        render json:
-          if params[:unblocked]
-            @unblocked_stories
-          elsif params[:epic]
-            @epic_stories
-          else
-            story_order.stories
-          end
-      end
-    end
   end
 
   def new
@@ -36,30 +23,22 @@ class StoriesController < ApplicationController
   def show
     @story = Story.find(params[:id])
 
-    respond_to do |format|
-      format.html do
-        @parent_stories = @story.parent_stories
-        
-        child_story_stories = @story.child_story_stories
+    @parent_stories = @story.parent_stories
+    
+    child_story_stories = @story.child_story_stories
 
-        @unstarted_child_story_stories = child_story_stories.child_unstarted.child_unfinished.child_unclosed
-        
-        @started_child_story_stories = child_story_stories.child_started.child_unfinished.child_unclosed
+    @unstarted_child_story_stories = child_story_stories.child_unstarted.child_unfinished.child_unclosed
+    
+    @started_child_story_stories = child_story_stories.child_started.child_unfinished.child_unclosed
 
-        @finished_child_story_stories = child_story_stories.child_started.child_finished.child_unclosed
+    @finished_child_story_stories = child_story_stories.child_started.child_finished.child_unclosed
 
-        @closed_child_story_stories = child_story_stories.child_started.child_finished.child_closed
+    @closed_child_story_stories = child_story_stories.child_started.child_finished.child_closed
 
-        @story_story = StoryStory.new(
-          parent_story: @story,
-          child_story: Story.new
-        )
-      end
-
-      format.json do
-        render json: @story.serializable_hash(includes: [ :child_stories, :parent_stories ])
-      end
-    end
+    @story_story = StoryStory.new(
+      parent_story: @story,
+      child_story: Story.new
+    )
   end
 
   def update

@@ -1,0 +1,18 @@
+%li
+  %h2
+    = headline
+  
+  %ul{ id: "#{headline.parameterize.underscore}_stories_list" }
+
+    - stories.each do |story|
+
+      = content_tag_for :li, story do
+
+        = link_to story do
+          - if story.finished_at.present? && ! story.closed_at.present?
+            %i.fa.fa-circle.yellow
+
+          - elsif story.started_at.present? && ! story.closed_at.present?
+            %i.fa.fa-circle.green
+
+          = story.title
