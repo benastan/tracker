@@ -16,13 +16,6 @@
 //= require jquery.ui.droppable
 //= require foundation
 //= require turbolinks
-//= require hogan.js
-//= require_tree ./templates
-//= require underscore
-//= require backbone
-//= require backbone_rails_sync
-//= require backbone_datalink
-//= require backbone/tracker
 //= require_tree .
 
 $(function(){ $(document).foundation(); });
