@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'story_stories/new.html.haml' do
+describe 'child_stories/new.html.haml' do
   let(:story_story) do
     StoryStory.new(
       parent_story_id: 'cologne',

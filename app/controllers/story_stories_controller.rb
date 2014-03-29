@@ -5,15 +5,6 @@ class StoryStoriesController < ApplicationController
     redirect_to story_story.parent_story
   end
 
-  def new
-    parent_story = Story.find(params[:story_id])
-
-    @story_story = StoryStory.new(
-      parent_story: parent_story,
-      child_story: Story.new
-    )
-  end
-
   def destroy
     story_story = StoryStory.find(params[:id])
 
