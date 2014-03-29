@@ -21,6 +21,8 @@ class Story < ActiveRecord::Base
 
   has_many :story_order_positions
 
+  accepts_nested_attributes_for :parent_story_stories, allow_destroy: true
+
   after_create do
     story_order = StoryOrder.first_or_create
     story_order.stories << self
@@ -57,9 +59,16 @@ class Story < ActiveRecord::Base
       where('(select count(id) from story_stories where story_stories.parent_story_id = stories.id) = 0')
     end
 
-    def epic
+    def blocked
+      where('(select count(id) from story_stories where story_stories.parent_story_id = stories.id) > 0')
+    end
+
+    def without_parents
       where('(select count(id) from story_stories where story_stories.child_story_id = stories.id) = 0')
-        .where('(select count(id) from story_stories where story_stories.parent_story_id = stories.id) > 0')
+    end
+
+    def epic
+      blocked.without_parents 
     end
 
     def started

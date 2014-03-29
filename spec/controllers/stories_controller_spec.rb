@@ -207,7 +207,7 @@ describe StoriesController do
 
     before do
       story.stub(
-        update_attributes: true,
+        update_attributes!: true,
         id: 1
       )
 
@@ -219,16 +219,26 @@ describe StoriesController do
         title: 'some title',
         started_at: 'right now',
         finished_at: 'left now',
-        closed_at: 'down now'
+        closed_at: 'down now',
+        parent_story_stories_attributes: [
+          {
+            parent_story_id: '12'
+          }
+        ]
       }
 
       patch(:update, id: 1, story: story_attributes)
 
-      story.should have_received(:update_attributes).with(
+      story.should have_received(:update_attributes!).with(
         'title' => 'some title',
         'started_at' => 'right now',
         'finished_at' => 'left now',
-        'closed_at' => 'down now'
+        'closed_at' => 'down now',
+        'parent_story_stories_attributes' => [
+          {
+            'parent_story_id' => '12'
+          }
+        ]
       )
     end
 

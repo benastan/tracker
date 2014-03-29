@@ -1,0 +1,6 @@
+= simple_form_for @story do |f|
+
+  = f.simple_fields_for :parent_story_stories, @story.parent_story_stories.new do |ff|
+    = ff.collection_radio_buttons :parent_story_id, @parent_stories, :last, :first
+
+  = f.submit "Move Story"
