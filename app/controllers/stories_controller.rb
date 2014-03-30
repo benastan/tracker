@@ -15,7 +15,9 @@ class StoriesController < ApplicationController
   end
 
   def create
-    story = Story.create(permitted_params[:story])
+    permitted_params = params.require(:story).permit(:title)
+
+    story = Story.create(permitted_params)
 
     redirect_to story
   end
@@ -44,9 +46,9 @@ class StoriesController < ApplicationController
   def update
     story = Story.find(params[:id])
 
-    story_attributes = params.require(:story).permit(:title, :started_at, :finished_at, :closed_at)
+    story_attributes = params.require(:story).permit(*permitted_update_parameters)
 
-    story.update_attributes(story_attributes)
+    story.update_attributes!(story_attributes)
     
     redirect_to story
   end
@@ -61,8 +63,14 @@ class StoriesController < ApplicationController
 
   protected
 
-  def permitted_params
-    params.permit(story: [ :title ])
+  def permitted_update_parameters
+    [
+      :title,
+      :started_at,
+      :finished_at,
+      :closed_at,
+      { parent_story_stories_attributes: [ :parent_story_id ] }
+    ]
   end
 
   def story_order

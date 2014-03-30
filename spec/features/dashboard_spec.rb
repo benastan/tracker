@@ -34,23 +34,45 @@ feature 'dashboard' do
 
     click_on 'Create Story'
     
+    click_on 'New Story'
+
+    fill_in 'story_title', with: 'Give me a child'
+
+    click_on 'Create Story'
+
+    parent_story = Story.last
+
+    click_on 'Hello, World'
+    
     fill_in 'story_story_child_story_attributes_title', with: 'Hello, Globe'
 
     click_on 'Create Story'
 
     page.should have_content 'Hello, Globe'
 
-    fill_in 'story_title', with: 'Hello, Pope'
+    first('.story_menu_toggle').click
+
+    click_on 'Move'
+
+    choose(all('input[type="radio"]').last['id'])
+
+    click_on "Move Story"
+
+    page.should have_content "Hello, Globe"
+    
+    click_on "Give me a child"
+
+    fill_in 'story_title', with: 'Now I have a child!'
 
     click_on 'Save'
 
-    page.should have_css '#story_title[value="Hello, Pope"]'
+    page.should have_css '#story_title[value="Now I have a child!"]'
 
     first('.story_menu_toggle').click
 
     first(:link, 'Unnest story').click
 
-    first(:link, 'Hello, Pope').click
+    first(:link, 'Now I have a child!').click
 
     page.should_not have_css '#show_story .story', text: 'Hello, Globe'
 
@@ -66,6 +88,6 @@ feature 'dashboard' do
 
     click_on 'Delete Story'
 
-    page.should_not have_content 'Hello, Pope'
+    page.should_not have_content 'Now I have a child!'
   end
 end

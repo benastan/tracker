@@ -7,6 +7,7 @@ describe Story do
   it { should have_many(:child_stories).through(:child_story_stories) }
   it { should have_many(:story_order_positions) }
   it { should have_many(:story_orders).through(:story_order_positions) }
+  it { should accept_nested_attributes_for(:parent_story_stories).allow_destroy(true) }
 
   describe 'parent child relation' do
     let!(:parent_story) { Story.create }

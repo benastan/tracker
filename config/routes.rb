@@ -5,7 +5,7 @@ Tracker::Application.routes.draw do
 
   resources :stories, only: [ :new, :create, :show, :destroy, :update ] do
     resources :child_stories, only: [ :new ]
-    resources :parent_stories, only: [ :new ]
+    resource :parent_stories, only: [ :edit ]
   end
 
   resources :story_stories, only: [ :create, :show, :destroy ]

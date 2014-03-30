@@ -24,6 +24,10 @@
       %i.fa.fa-times
       Unnest Child
 
+    = link_to edit_story_parent_stories_path(child_story_story.child_story), title: 'Move' do
+      %i.fa.fa-arrows
+      Move
+
     = link_to child_story_story.child_story, method: :delete, title: 'Delete Story' do
       %i.fa.fa-trash-o
       Delete Story
