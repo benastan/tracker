@@ -86,6 +86,12 @@ feature 'dashboard' do
 
     page.should have_css 'button', text: 'Start'
 
+    click_on 'Move Story'
+    
+    choose(all('input[type="radio"]').last['id'])
+
+    click_on "Move Story"
+
     click_on 'Delete Story'
 
     page.should_not have_content 'Now I have a child!'

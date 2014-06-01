@@ -47,6 +47,12 @@
         = link_to @story, class: 'button small alert expand radius', title: 'Delete Story', method: :delete do
           %i.fa.fa-trash-o
 
+    .row
+      .large-12.columns
+        = link_to edit_story_parent_stories_path(@story), class: 'button small radius' do
+          %i.fa.fa-arrows
+          Move Story
+
     - if @unstarted_child_story_stories.any?
       %h4
         Unstarted

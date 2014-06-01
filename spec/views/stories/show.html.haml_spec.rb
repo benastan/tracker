@@ -86,6 +86,7 @@ describe 'stories/show.html.haml' do
   specify do
     rendered.should have_css "#edit_story_#{story.id}"
   end
+
   specify do
     rendered.should have_css '#story_title[value="Story"]'
   end
