@@ -25,7 +25,7 @@ class StoriesController < ApplicationController
   def show
     @story = Story.find(params[:id])
 
-    @parent_stories = @story.parent_stories
+    @parent_story_stories = @story.parent_story_stories
     
     child_story_stories = @story.child_story_stories
 

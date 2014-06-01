@@ -59,9 +59,11 @@ feature 'dashboard' do
     click_on "Move Story"
 
     page.should have_content "Hello, Globe"
-    
-    click_on "Give me a child"
 
+    within '#story_parent_story_stories' do
+      click_on "Give me a child"
+    end
+    
     fill_in 'story_title', with: 'Now I have a child!'
 
     click_on 'Save'

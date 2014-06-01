@@ -68,6 +68,8 @@ describe 'stories/show.html.haml' do
     
     assign :story_story, story_story
     
+    assign :parent_story_stories, []
+    
     assign :unstarted_child_story_stories, unstarted_child_story_stories
 
     assign :started_child_story_stories, started_child_story_stories

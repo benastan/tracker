@@ -81,3 +81,11 @@
         Closed
 
       = render partial: 'child_story_story', collection: @closed_child_story_stories
+
+    - if @parent_story_stories.any?
+      %h4 Parent Stories
+      
+      %ul#story_parent_story_stories
+        - @parent_story_stories.each do |parent_story_story|
+          %li
+            = link_to parent_story_story.parent_story.title, parent_story_story.parent_story

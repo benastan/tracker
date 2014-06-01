@@ -103,7 +103,7 @@ describe StoriesController do
     let(:fake_story) do
       double 'story',
         serializable_hash: fake_hash,
-        parent_stories: 'kiddo',
+        parent_story_stories: 'kiddo',
         child_story_stories: child_story_stories
     end
 
@@ -156,7 +156,7 @@ describe StoriesController do
       specify do
         get(:show, id: 'asdfasdfa')
 
-        assigns(:parent_stories).should == 'kiddo'
+        assigns(:parent_story_stories).should == 'kiddo'
       end
 
       specify do
