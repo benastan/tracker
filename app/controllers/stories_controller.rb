@@ -72,9 +72,4 @@ class StoriesController < ApplicationController
       { parent_story_stories_attributes: [ :parent_story_id ] }
     ]
   end
-
-  def story_order
-    StoryOrder.first_or_create
-  end
-  helper_method :story_order
 end

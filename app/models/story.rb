@@ -19,14 +19,7 @@ class Story < ActiveRecord::Base
   has_many :story_orders,
     through: :story_order_positions
 
-  has_many :story_order_positions
-
   accepts_nested_attributes_for :parent_story_stories, allow_destroy: true
-
-  after_create do
-    story_order = StoryOrder.first_or_create
-    story_order.stories << self
-  end
 
   def blocking?
     parent_stories.any?

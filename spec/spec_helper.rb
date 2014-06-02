@@ -9,9 +9,6 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
-# Fix circular dependency problem.
-StoryOrderPositionsController
-
 RSpec.configure do |config|
   Capybara.javascript_driver = :selenium
   Capybara.ignore_hidden_elements = true

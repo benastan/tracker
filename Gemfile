@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 # gem 'bcrypt-ruby', '~> 3.0.0'
-gem 'acts_as_list'
 gem 'coffee-rails', '~> 4.0.0'
 gem 'database_cleaner'
 gem 'font-awesome-rails'
