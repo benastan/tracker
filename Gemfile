@@ -10,7 +10,6 @@ gem 'hogan_assets'
 gem 'inherited_resources'
 gem 'jbuilder', '~> 1.2'
 gem 'jquery-rails'
-gem 'jquery-ui-rails'
 gem 'launchy'
 gem 'pg'
 gem 'rails', '4.0.0'
@@ -27,7 +26,7 @@ end
 
 group :development, :test do
   gem 'factory_girl_rails'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 2.14.1'
   gem 'capybara'
   gem 'capybara-webkit'
   gem 'selenium-webdriver'

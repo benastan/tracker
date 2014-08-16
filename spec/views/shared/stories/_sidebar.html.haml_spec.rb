@@ -11,7 +11,7 @@ describe 'shared/stories/_sidebar.html.haml' do
     double 'unblocked unstarted stories collection',
       any?: false
   end
-  
+
   let(:epic_stories) do
     double 'epic stories collection',
       any?: false
@@ -21,21 +21,21 @@ describe 'shared/stories/_sidebar.html.haml' do
     double 'started stories collection',
       any?: false
   end
-  
+
   before do
     assign :unblocked_unstarted_stories, unblocked_unstarted_stories
-    
+
     assign :epic_stories, epic_stories
-    
+
     assign :started_stories, started_stories
   end
 
   specify { render.should have_css '#stories_sidebar a', text: 'New Story' }
 
   specify { render.should have_link 'New Story', href: new_story_path }
-  
+
   specify { render.should have_css '#stories_sidebar' }
-  
+
   specify { render.should have_css '#stories_sidebar .sidebar_content' }
 
   describe 'stories list' do
@@ -47,7 +47,7 @@ describe 'shared/stories/_sidebar.html.haml' do
       specify do
         render
 
-        view.should_not have_received(:render_sidebar_index).with('Epic', epic_stories)
+        view.should_not have_received(:render_sidebar_index).with('Focuses', epic_stories)
       end
     end
 
@@ -57,7 +57,7 @@ describe 'shared/stories/_sidebar.html.haml' do
       specify do
         render
 
-        view.should have_received(:render_sidebar_index).with('Epic', epic_stories)
+        view.should have_received(:render_sidebar_index).with('Focuses', epic_stories)
       end
     end
 
@@ -65,7 +65,7 @@ describe 'shared/stories/_sidebar.html.haml' do
       specify do
         render
 
-        view.should_not have_received(:render_sidebar_index).with('Unblocked, Unstarted', unblocked_unstarted_stories)
+        view.should_not have_received(:render_sidebar_index).with('Ready to Go', unblocked_unstarted_stories)
       end
     end
 
@@ -75,7 +75,7 @@ describe 'shared/stories/_sidebar.html.haml' do
       specify do
         render
 
-        view.should have_received(:render_sidebar_index).with('Unblocked, Unstarted', unblocked_unstarted_stories)
+        view.should have_received(:render_sidebar_index).with('Ready to Go', unblocked_unstarted_stories)
       end
     end
 
@@ -83,7 +83,7 @@ describe 'shared/stories/_sidebar.html.haml' do
       specify do
         render
 
-        view.should_not have_received(:render_sidebar_index).with('Started', started_stories)
+        view.should_not have_received(:render_sidebar_index).with('In Progress', started_stories)
       end
     end
 
@@ -93,7 +93,7 @@ describe 'shared/stories/_sidebar.html.haml' do
       specify do
         render
 
-        view.should have_received(:render_sidebar_index).with('Started', started_stories)
+        view.should have_received(:render_sidebar_index).with('In Progress', started_stories)
       end
     end
   end

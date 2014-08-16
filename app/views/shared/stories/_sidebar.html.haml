@@ -5,10 +5,10 @@
 
   %ul.sidebar_content
     - if @epic_stories.any?
-      = render_sidebar_index 'Epic', @epic_stories
-    
+      = render_sidebar_index 'Focuses', @epic_stories
+
     - if @started_stories.any?
-      = render_sidebar_index 'Started', @started_stories
+      = render_sidebar_index 'In Progress', @started_stories
 
     - if @unblocked_unstarted_stories.any?
-      = render_sidebar_index 'Unblocked, Unstarted', @unblocked_unstarted_stories
+      = render_sidebar_index 'Ready to Go', @unblocked_unstarted_stories

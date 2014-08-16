@@ -10,7 +10,7 @@ describe Story do
   describe 'parent child relation' do
     let!(:parent_story) { Story.create }
     let!(:child_story) { parent_story.child_stories.create }
-    
+
     specify { parent_story.child_stories.count.should == 1 }
     specify { child_story.parent_stories.count.should == 1 }
 
@@ -52,6 +52,10 @@ describe Story do
     specify { unblocked_story.should_not be_epic }
     specify { standalone_story.should_not be_epic }
   end
+
+  # describe '#epic', simple_story_tree: true do
+  #   specify { unblocked_story.should == epic_story }
+  # end
 
   describe '#serializable_hash', simple_story_tree: true do
     let(:serialized_hash) { epic_story.serializable_hash }
@@ -107,13 +111,13 @@ describe Story do
         finished_at: Time.new - 1.hour,
         closed_at: Time.new - 1.hour
     end
-    
+
     describe '.started' do
       specify do
         Story.started.should == [ started_story, finished_story, closed_story ]
       end
     end
-    
+
     describe '.strict_started' do
       specify do
         Story.strict_started.should == [ started_story ]
