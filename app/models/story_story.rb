@@ -6,7 +6,7 @@ class StoryStory < ActiveRecord::Base
   validates :parent_story_id, uniqueness: { scope: :child_story_id }, if: -> { ! child_story.try(:new_record?) }
 
   accepts_nested_attributes_for :child_story
-  
+
   before_create do
     invalid_parent_story_stories = StoryStory.parent_story_stories_of(parent_story).where(parent_story: child_story)
 
@@ -16,6 +16,17 @@ class StoryStory < ActiveRecord::Base
 
     true
   end
+
+	after_create do
+		extract_child_stories = -> (story) {
+	   	story.child_stories.inject([ story ]) do |memo, child_story|
+				memo.concat(extract_child_stories.call(child_story))
+			end
+		}
+
+		nested_child_stories = extract_child_stories.call(child_story)
+		nested_child_stories.each(&:update_min_epic_parent_story_epic_order)
+	end
 
   def serializable_hash(options = {})
     options[:include] ||= []

@@ -2,7 +2,7 @@ class StoriesController < ApplicationController
   respond_to :json, :html
 
   before_filter do
-    @unblocked_unstarted_stories = Story.unblocked.unstarted
+    @unblocked_unstarted_stories = Story.unblocked.unstarted.order('min_epic_parent_story_epic_order ASC')
     @epic_stories = Story.epic_ordered
     @started_stories = Story.strict_started
   end
@@ -50,7 +50,13 @@ class StoriesController < ApplicationController
 
     story.update_attributes!(story_attributes)
 
-    redirect_to story
+    redirect_to(
+      if story.previous_changes.key?(:epic_order)
+        :root
+      else
+        story
+      end
+    )
   end
 
   def destroy

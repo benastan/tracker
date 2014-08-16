@@ -59,7 +59,7 @@ describe StoryStory do
 
     let!(:tippy_top_story) { top_story_3.parent_stories.create(title: 'tippy top story') }
 
-    let(:parent_story_stories) { StoryStory.parent_story_stories_of(story) } 
+    let(:parent_story_stories) { StoryStory.parent_story_stories_of(story) }
 
     specify { parent_story_stories.should include mid_story_1.child_story_stories.first }
 
@@ -77,6 +77,21 @@ describe StoryStory do
   describe '#serializable_hash' do
     specify do
       story_story.serializable_hash['parent_story'].should == parent_story.serializable_hash
+    end
+  end
+
+  describe 'after_create hook', simple_story_tree: true do
+    let!(:other_epic_story) { create :story, :epic }
+    let!(:other_middle_story) { other_epic_story.child_stories.first}
+    let!(:other_unblocked_story) { other_middle_story.child_stories.first}
+
+    before { epic_story.update(epic_order_position: :first) }
+
+    specify do
+      expect(->{StoryStory.create(parent_story: epic_story, child_story: other_middle_story)})
+        .to change { other_unblocked_story.reload.min_epic_parent_story_epic_order }
+        .from(other_epic_story.epic_order)
+        .to(epic_story.epic_order)
     end
   end
 
@@ -110,7 +125,7 @@ describe StoryStory do
       create :story_story,
         child_story: closed_child
     end
-    
+
     describe '.child_started' do
       specify do
         StoryStory.child_started.should == [ child_started_story_story ]

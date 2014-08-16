@@ -25,6 +25,37 @@ describe Story do
     end
   end
 
+  describe 'after_save hook', simple_story_tree: true do
+    context 'when epic_order was updated' do
+      subject { epic_story.update(title: 'blah') }
+      specify { expect(->{subject}).to change{middle_story.reload.min_epic_parent_story_epic_order} }
+      specify { expect(->{subject}).to change{unblocked_story.reload.min_epic_parent_story_epic_order} }
+    end
+
+    context 'when epic_order was not updated' do
+      let!(:other_epic_story) { create :story, :epic }
+
+      before do
+        middle_story.update_column(:min_epic_parent_story_epic_order, 0)
+        unblocked_story.update_column(:min_epic_parent_story_epic_order, 0)
+      end
+
+      subject { epic_story.update!(epic_order_position: :first) }
+
+      specify do
+        middle_story.reload.min_epic_parent_story_epic_order.should == 0
+        subject
+        middle_story.reload.min_epic_parent_story_epic_order.should == epic_story.reload.epic_order
+      end
+
+      specify do
+        unblocked_story.reload.min_epic_parent_story_epic_order.should == 0
+        subject
+        unblocked_story.reload.min_epic_parent_story_epic_order.should == epic_story.reload.epic_order
+      end
+    end
+  end
+
   describe '#blocking?', simple_story_tree: true do
     specify { epic_story.should_not be_blocking }
     specify { middle_story.should be_blocking }
@@ -53,6 +84,36 @@ describe Story do
     specify { standalone_story.should_not be_epic }
   end
 
+  describe '#nested_parent_stories', simple_story_tree: true do
+    specify { unblocked_story.nested_parent_stories.should == [ epic_story, middle_story ] }
+    specify { middle_story.nested_parent_stories.should == [ epic_story ] }
+  end
+
+  describe '#epic_parent_stories', simple_story_tree: true do
+    specify { unblocked_story.epic_parent_stories.should == [ epic_story ] }
+    specify { middle_story.epic_parent_stories.should == [ epic_story ] }
+  end
+
+  describe '#calculate_min_epic_parent_story_epic_order', simple_story_tree: true do
+    let!(:other_epic_story) { create :story, :epic }
+    let!(:other_middle_story) { other_epic_story.child_stories.first}
+    let!(:other_unblocked_story) { other_middle_story.child_stories.first}
+
+    specify { unblocked_story.calculate_min_epic_parent_story_epic_order.should == epic_story.epic_order }
+    specify { other_unblocked_story.calculate_min_epic_parent_story_epic_order.should == other_epic_story.epic_order }
+  end
+
+  describe '#update_min_epic_parent_story_epic_order', simple_story_tree: true do
+    before { unblocked_story.update!(min_epic_parent_story_epic_order: 1) }
+
+    specify do
+      expect(->{unblocked_story.update_min_epic_parent_story_epic_order})
+        .to change{unblocked_story.reload.min_epic_parent_story_epic_order}
+        .from(1)
+        .to(epic_story.epic_order)
+    end
+  end
+
   describe '#serializable_hash', simple_story_tree: true do
     let(:serialized_hash) { epic_story.serializable_hash }
 
@@ -60,14 +121,6 @@ describe Story do
     specify { serialized_hash['blocked?'].should == true }
     specify { serialized_hash['unblocked?'].should == false }
     specify { serialized_hash['epic?'].should == true }
-
-    # it "includes the story's children" do
-    #   serialized_hash['child_stories'].should == [ middle_story.serializable_hash ]
-    # end
-
-    # it "includes the story's parents" do
-    #   serialized_hash['parent_stories'].should == [ middle_story.serializable_hash ]
-    # end
   end
 
   describe 'factories' do

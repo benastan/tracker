@@ -5,6 +5,16 @@
 
     - @unblocked_unstarted_stories.each do |unblocked_story|
       = div_for unblocked_story do
-        = link_to unblocked_story do
-          %h5
-            = unblocked_story.title
+        .row
+          .large-1.small-2.columns
+            = link_to unblocked_story, class: 'button tiny radius expand' do
+              = unblocked_story.id
+
+          .large-8.small-10.columns
+            %h5
+              = unblocked_story.title
+
+          .large-3.columns
+            - unblocked_story.epic_parent_stories.pluck(:title).each do |epic_title|
+              %span.label.radius.secondary.story_epic_parent_story_title
+                = epic_title

@@ -23,6 +23,25 @@ class Story < ActiveRecord::Base
 
   accepts_nested_attributes_for :parent_story_stories, allow_destroy: true
 
+  after_save do
+    if epic? && epic_order_changed?
+
+      # extract_child_stories = -> (story) {
+      #    story.child_stories.inject([ story ]) do |memo, child_story|
+      #     memo.concat(extract_child_stories.call(child_story))
+      #   end
+      # }
+      #
+      # nested_child_stories = child_stories.inject([]) do |memo, child_story|
+      #   memo.concat(extract_child_stories.call(child_story))
+      # end
+
+      # This is terrible!
+      Story.all.each(&:update_min_epic_parent_story_epic_order)
+
+    end
+  end
+
   def self.epic_ordered
     epic.rank(:epic_order).all
   end
@@ -33,6 +52,34 @@ class Story < ActiveRecord::Base
 
   def blocked?
     child_stories.any?
+  end
+
+  def update_min_epic_parent_story_epic_order
+    update!(min_epic_parent_story_epic_order: calculate_min_epic_parent_story_epic_order)
+  end
+
+  def calculate_min_epic_parent_story_epic_order
+    epic_parent_stories.pluck(:epic_order).min
+  end
+
+  def epic_parent_stories
+    nested_parent_stories.epic
+  end
+
+  def nested_parent_stories
+    Story.where("id in (#{parent_story_stories_sql})")
+  end
+
+  def parent_story_stories_sql
+    <<-SQL
+WITH RECURSIVE parent_stories(id, parent_story_id, child_story_id) AS (
+  SELECT id, parent_story_id, child_story_id FROM story_stories WHERE child_story_id = #{id}
+UNION ALL
+  SELECT ss.id, ss.parent_story_id, ss.child_story_id
+  FROM parent_stories ps, story_stories ss
+  WHERE ps.parent_story_id = ss.child_story_id
+) SELECT parent_story_id from parent_stories
+SQL
   end
 
   def epic?
