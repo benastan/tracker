@@ -5,7 +5,7 @@
 
   %ul.sidebar_content
     - if @epic_stories.any?
-      = render_sidebar_index 'Focuses', @epic_stories
+      = render_sidebar_index 'Focuses', @epic_stories, epic: true
 
     - if @started_stories.any?
       = render_sidebar_index 'In Progress', @started_stories

@@ -53,10 +53,6 @@ describe Story do
     specify { standalone_story.should_not be_epic }
   end
 
-  # describe '#epic', simple_story_tree: true do
-  #   specify { unblocked_story.should == epic_story }
-  # end
-
   describe '#serializable_hash', simple_story_tree: true do
     let(:serialized_hash) { epic_story.serializable_hash }
 
@@ -91,6 +87,19 @@ describe Story do
 
   describe '.epic', simple_story_tree: true do
     specify { Story.epic.should =~ [ epic_story ] }
+  end
+
+  describe '.epic_ordered', simple_story_tree: true do
+    let!(:other_epic_story) { create :story, :epic }
+
+    describe 'default order' do
+      specify { Story.epic_ordered.should == [ epic_story, other_epic_story ] }
+    end
+
+    describe 're-ordered' do
+      before { other_epic_story.update!(epic_order_position: :first) }
+      specify { Story.epic_ordered.should == [ other_epic_story, epic_story ] }
+    end
   end
 
   describe 'started, finished, closed scopes' do

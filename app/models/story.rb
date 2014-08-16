@@ -1,4 +1,6 @@
 class Story < ActiveRecord::Base
+  include RankedModel
+  ranks :epic_order
 
   has_many :child_stories,
     through: :child_story_stories
@@ -20,6 +22,10 @@ class Story < ActiveRecord::Base
     through: :story_order_positions
 
   accepts_nested_attributes_for :parent_story_stories, allow_destroy: true
+
+  def self.epic_ordered
+    epic.rank(:epic_order).all
+  end
 
   def blocking?
     parent_stories.any?
@@ -43,7 +49,7 @@ class Story < ActiveRecord::Base
     options[:methods] << :blocked?
     options[:methods] << :unblocked?
     options[:methods] << :epic?
-    
+
     super(options)
   end
 
@@ -61,7 +67,7 @@ class Story < ActiveRecord::Base
     end
 
     def epic
-      blocked.without_parents 
+      blocked.without_parents
     end
 
     def started
@@ -97,4 +103,3 @@ class Story < ActiveRecord::Base
     end
   end
 end
-

@@ -19,6 +19,7 @@ gem 'shoulda-matchers'
 gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
 gem 'unicorn'
+gem 'ranked-model'
 
 group :production do
   gem 'rails_12factor'
@@ -29,8 +30,6 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.14.1'
   gem 'capybara'
   gem 'capybara-webkit'
-  gem 'selenium-webdriver'
-  gem 'spin'
   gem 'pry'
 end
 

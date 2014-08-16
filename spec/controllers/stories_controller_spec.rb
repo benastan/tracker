@@ -1,31 +1,17 @@
 require 'spec_helper'
 
 describe StoriesController do
-  it do
-    should route(:get, '/stories/new').to(action: :new)
-  end
-
-  it do
-    should route(:post, '/stories').to(action: :create)
-  end
-
-  it do
-    should route(:get, '/stories/1').to(action: :show, id: '1')
-  end
-
-  it do
-    should route(:patch, '/stories/1').to(action: :update, id: '1')
-  end
-
-  it do
-    should route(:delete, '/stories/1').to(action: :destroy, id: '1')
-  end
+  it { should route(:get, '/stories/new').to(action: :new) }
+  it { should route(:post, '/stories').to(action: :create) }
+  it { should route(:get, '/stories/1').to(action: :show, id: '1') }
+  it { should route(:patch, '/stories/1').to(action: :update, id: '1') }
+  it { should route(:delete, '/stories/1').to(action: :destroy, id: '1') }
 
   describe '#index' do
     before do
       Story.stub(
         unblocked: double('unblocked', unstarted: :'unblocked, unstarted'),
-        epic: :epic,
+        epic_ordered: :epic_ordered,
         strict_started: :started,
         strict_finished: :finished,
         closed: :closed
@@ -33,23 +19,11 @@ describe StoriesController do
     end
 
     describe 'before filter' do
-      specify do
-        get(:index)
-        
-        assigns[:unblocked_unstarted_stories].should == :'unblocked, unstarted'
-      end
+      before { get(:index) }
 
-      specify do
-        get(:index)
-        
-        assigns[:epic_stories].should == :epic
-      end
-
-      specify do
-        get(:index)
-        
-        assigns[:started_stories].should == :started
-      end
+      specify { assigns[:unblocked_unstarted_stories].should == :'unblocked, unstarted' }
+      specify { assigns[:epic_stories].should == :epic_ordered }
+      specify { assigns[:started_stories].should == :started }
     end
   end
 
@@ -62,7 +36,7 @@ describe StoriesController do
 
     specify do
       get(:new)
-      
+
       assigns(:story).should_not be_persisted
     end
 
@@ -82,7 +56,7 @@ describe StoriesController do
     specify do
       post_create.should redirect_to Story.last
     end
-    
+
     specify do
       expect do
         post_create
@@ -132,7 +106,7 @@ describe StoriesController do
       let!(:new_story_story) do
         StoryStory.new
       end
-      
+
       let!(:new_story) do
         Story.new
       end
@@ -220,6 +194,7 @@ describe StoriesController do
         started_at: 'right now',
         finished_at: 'left now',
         closed_at: 'down now',
+        epic_order_position: :first,
         parent_story_stories_attributes: [
           {
             parent_story_id: '12'
@@ -234,6 +209,7 @@ describe StoriesController do
         'started_at' => 'right now',
         'finished_at' => 'left now',
         'closed_at' => 'down now',
+        'epic_order_position' => 'first',
         'parent_story_stories_attributes' => [
           {
             'parent_story_id' => '12'
@@ -252,7 +228,7 @@ describe StoriesController do
       double 'story',
         destroy!: true
     end
-    
+
     before do
       Story.stub(find: story)
     end

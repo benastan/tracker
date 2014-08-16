@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'dashboard' do
+feature 'dashboard', js: true do
   let(:epic_story) do
     create :story, title: 'Epic Story'
   end
@@ -16,7 +16,15 @@ feature 'dashboard' do
   let!(:standalone_story) do
     create :story, title: 'Standalone Story'
   end
-  
+
+  def focuses_stories_list_story(story_name)
+    find('#focuses_stories_list .story', text: story_name)
+  end
+
+  def sidebar_focuses_stories_list
+    find('#focuses_stories_list')
+  end
+
   before do
     epic_story.child_stories << middle_story
 
@@ -33,7 +41,7 @@ feature 'dashboard' do
     fill_in 'story_title', with: 'Hello, World'
 
     click_on 'Create Story'
-    
+
     click_on 'New Story'
 
     fill_in 'story_title', with: 'Give me a child'
@@ -43,7 +51,7 @@ feature 'dashboard' do
     parent_story = Story.last
 
     click_on 'Hello, World'
-    
+
     fill_in 'story_story_child_story_attributes_title', with: 'Hello, Globe'
 
     click_on 'Create Story'
@@ -54,7 +62,7 @@ feature 'dashboard' do
 
     click_on 'Move'
 
-    choose(all('input[type="radio"]').last['id'])
+    all('label').last.click
 
     click_on "Move Story"
 
@@ -63,7 +71,7 @@ feature 'dashboard' do
     within '#story_parent_story_stories' do
       click_on "Give me a child"
     end
-    
+
     fill_in 'story_title', with: 'Now I have a child!'
 
     click_on 'Save'
@@ -81,7 +89,7 @@ feature 'dashboard' do
     click_on 'Start'
 
     click_on 'Finish'
-    
+
     click_on 'Close'
 
     click_on 'Closed'
@@ -89,13 +97,21 @@ feature 'dashboard' do
     page.should have_css 'button', text: 'Start'
 
     click_on 'Move Story'
-    
-    choose(all('input[type="radio"]').last['id'])
+
+    all('label').last.click
 
     click_on "Move Story"
 
     click_on 'Delete Story'
 
     page.should_not have_content 'Now I have a child!'
+
+    within(focuses_stories_list_story(%r|Hello, World|)) do
+      find('.fa-sort-asc').click
+    end
+
+    within(sidebar_focuses_stories_list) do
+      page.should have_content 'Hello, World Epic Story'
+    end
   end
 end

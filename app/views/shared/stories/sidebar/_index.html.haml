@@ -1,7 +1,8 @@
+- epic = local_assigns[:epic].present?
 %li
   %h2
     = headline
-  
+
   %ul{ id: "#{headline.parameterize.underscore}_stories_list" }
 
     - stories.each do |story|
@@ -16,3 +17,10 @@
             %i.fa.fa-circle.green
 
           = story.title
+
+          - if epic
+            = simple_form_for story do |f|
+              = f.hidden_field :epic_order_position, value: :first
+              = f.submit 'Make First', class: 'hidden'
+              = link_to '#', class: 'submitForm' do
+                %i.fa.fa-sort-asc

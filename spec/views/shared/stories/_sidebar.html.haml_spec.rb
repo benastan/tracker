@@ -57,7 +57,7 @@ describe 'shared/stories/_sidebar.html.haml' do
       specify do
         render
 
-        view.should have_received(:render_sidebar_index).with('Focuses', epic_stories)
+        view.should have_received(:render_sidebar_index).with('Focuses', epic_stories, epic: true)
       end
     end
 

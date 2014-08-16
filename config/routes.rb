@@ -11,4 +11,8 @@ Tracker::Application.routes.draw do
   resources :story_stories, only: [ :create, :show, :destroy ]
 
   resources :story_order_positions, only: :update
+
+  if Rails.env.test? || Rails.env.development?
+    resource :file_preview, only: [:show]
+  end
 end
