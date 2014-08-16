@@ -8,19 +8,18 @@
     - stories.each do |story|
 
       = content_tag_for :li, story do
+        = simple_form_for story do |f|
+          = link_to story, class: 'sidebar_view_story' do
+            - if story.finished_at.present? && ! story.closed_at.present?
+              %i.fa.fa-circle.yellow
 
-        = link_to story do
-          - if story.finished_at.present? && ! story.closed_at.present?
-            %i.fa.fa-circle.yellow
+            - elsif story.started_at.present? && ! story.closed_at.present?
+              %i.fa.fa-circle.green
 
-          - elsif story.started_at.present? && ! story.closed_at.present?
-            %i.fa.fa-circle.green
-
-          = story.title
+            = story.title
 
           - if epic
-            = simple_form_for story do |f|
-              = f.hidden_field :epic_order_position, value: :first
-              = f.submit 'Make First', class: 'hidden'
-              = link_to '#', class: 'submitForm' do
-                %i.fa.fa-sort-asc
+            = f.hidden_field :epic_order_position, value: :first
+            = f.submit 'Make First', class: 'hidden'
+            = link_to '#', class: 'submitForm' do
+              %i.fa.fa-sort-asc
