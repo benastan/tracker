@@ -3,3 +3,4 @@ log
 tmp
 config/database.yml
 .rbenv-version
+.env

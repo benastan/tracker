@@ -17,6 +17,7 @@ gem 'shoulda-matchers'
 gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
 gem 'unicorn'
+gem 'foreman'
 
 group :production do
   gem 'rails_12factor'
