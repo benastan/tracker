@@ -35,6 +35,26 @@ class Story < ActiveRecord::Base
     child_stories.any?
   end
 
+  def epic_parent_stories
+    nested_parent_stories.epic
+  end
+
+  def nested_parent_stories
+    Story.where("id in (#{parent_story_stories_sql})")
+  end
+
+  def parent_story_stories_sql
+    <<-SQL
+WITH RECURSIVE parent_stories(id, parent_story_id, child_story_id) AS (
+  SELECT id, parent_story_id, child_story_id FROM story_stories WHERE child_story_id = #{id}
+UNION ALL
+  SELECT ss.id, ss.parent_story_id, ss.child_story_id
+  FROM parent_stories ps, story_stories ss
+  WHERE ps.parent_story_id = ss.child_story_id
+) SELECT parent_story_id from parent_stories
+SQL
+  end
+
   def epic?
     blocked? && ! blocking?
   end

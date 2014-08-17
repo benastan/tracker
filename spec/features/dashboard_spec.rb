@@ -106,6 +106,8 @@ feature 'dashboard', js: true do
 
     page.should_not have_content 'Now I have a child!'
 
+    page.should have_content %r|\d{1,} Unblocked Story Epic Story \d{1,} Hello, Globe Hello, World \d{1,} Standalone Story|
+
     within(focuses_stories_list_story(%r|Hello, World|)) do
       find('.fa-sort-asc').click
     end
@@ -113,5 +115,9 @@ feature 'dashboard', js: true do
     within(sidebar_focuses_stories_list) do
       page.should have_content 'Hello, World Epic Story'
     end
+
+    page.should have_content %r|\d{1,} Hello, Globe Hello, World \d{1,} Unblocked Story Epic Story \d{1,} Standalone Story|
+
+    click_on 'Home'
   end
 end

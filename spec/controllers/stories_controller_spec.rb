@@ -8,9 +8,11 @@ describe StoriesController do
   it { should route(:delete, '/stories/1').to(action: :destroy, id: '1') }
 
   describe '#index' do
+    let(:unblocked_unstarted_stories) { double(order: :'unblocked, unstarted, epic ordered') }
+
     before do
       Story.stub(
-        unblocked: double('unblocked', unstarted: :'unblocked, unstarted'),
+        unblocked: double('unblocked', unstarted: unblocked_unstarted_stories),
         epic_ordered: :epic_ordered,
         strict_started: :started,
         strict_finished: :finished,
@@ -21,9 +23,10 @@ describe StoriesController do
     describe 'before filter' do
       before { get(:index) }
 
-      specify { assigns[:unblocked_unstarted_stories].should == :'unblocked, unstarted' }
+      specify { assigns[:unblocked_unstarted_stories].should == :'unblocked, unstarted, epic ordered' }
       specify { assigns[:epic_stories].should == :epic_ordered }
       specify { assigns[:started_stories].should == :started }
+      specify { unblocked_unstarted_stories.should have_received(:order).with('min_epic_parent_story_epic_order ASC') }
     end
   end
 
@@ -174,7 +177,7 @@ describe StoriesController do
     end
   end
 
-  describe 'PATCH update' do
+  describe 'PATCH #update' do
     let(:story) do
       build :story
     end
@@ -218,8 +221,25 @@ describe StoriesController do
       )
     end
 
-    specify do
-      patch(:update, id: 1, story: { title: 'some title' }).should redirect_to story
+    context 'when epic_order_position changed' do
+      before do
+        allow(UpdateStoriesMinEpicParentStoryEpicOrder).to receive(:perform).and_return(nil)
+        story.stub(previous_changes: { epic_order: '1' })
+        patch(:update, id: 1, story: { epic_order_position: :first })
+      end
+
+      specify { expect(response).to redirect_to root_path }
+      specify { expect(UpdateStoriesMinEpicParentStoryEpicOrder).to have_received(:perform) }
+    end
+
+    context 'when epic_order_position did not change' do
+      before do
+        allow(UpdateStoriesMinEpicParentStoryEpicOrder).to receive(:perform).and_return(nil)
+        story.stub(previous_changes: {})
+        patch(:update, id: 1, story: { title: 'some title' })
+      end
+      specify { expect(response).to redirect_to story }
+      specify { expect(UpdateStoriesMinEpicParentStoryEpicOrder).not_to have_received(:perform) }
     end
   end
 

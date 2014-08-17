@@ -6,7 +6,7 @@ class StoryStory < ActiveRecord::Base
   validates :parent_story_id, uniqueness: { scope: :child_story_id }, if: -> { ! child_story.try(:new_record?) }
 
   accepts_nested_attributes_for :child_story
-  
+
   before_create do
     invalid_parent_story_stories = StoryStory.parent_story_stories_of(parent_story).where(parent_story: child_story)
 

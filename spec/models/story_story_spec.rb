@@ -59,7 +59,7 @@ describe StoryStory do
 
     let!(:tippy_top_story) { top_story_3.parent_stories.create(title: 'tippy top story') }
 
-    let(:parent_story_stories) { StoryStory.parent_story_stories_of(story) } 
+    let(:parent_story_stories) { StoryStory.parent_story_stories_of(story) }
 
     specify { parent_story_stories.should include mid_story_1.child_story_stories.first }
 
@@ -110,7 +110,7 @@ describe StoryStory do
       create :story_story,
         child_story: closed_child
     end
-    
+
     describe '.child_started' do
       specify do
         StoryStory.child_started.should == [ child_started_story_story ]

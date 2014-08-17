@@ -53,6 +53,16 @@ describe Story do
     specify { standalone_story.should_not be_epic }
   end
 
+  describe '#nested_parent_stories', simple_story_tree: true do
+    specify { unblocked_story.nested_parent_stories.should == [ epic_story, middle_story ] }
+    specify { middle_story.nested_parent_stories.should == [ epic_story ] }
+  end
+
+  describe '#epic_parent_stories', simple_story_tree: true do
+    specify { unblocked_story.epic_parent_stories.should == [ epic_story ] }
+    specify { middle_story.epic_parent_stories.should == [ epic_story ] }
+  end
+
   describe '#serializable_hash', simple_story_tree: true do
     let(:serialized_hash) { epic_story.serializable_hash }
 
@@ -60,14 +70,6 @@ describe Story do
     specify { serialized_hash['blocked?'].should == true }
     specify { serialized_hash['unblocked?'].should == false }
     specify { serialized_hash['epic?'].should == true }
-
-    # it "includes the story's children" do
-    #   serialized_hash['child_stories'].should == [ middle_story.serializable_hash ]
-    # end
-
-    # it "includes the story's parents" do
-    #   serialized_hash['parent_stories'].should == [ middle_story.serializable_hash ]
-    # end
   end
 
   describe 'factories' do
