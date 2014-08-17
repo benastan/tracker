@@ -64,7 +64,7 @@ feature 'dashboard', js: true do
 
     first('.story_menu_toggle').click
 
-    click_on 'Move'
+    click_on 'Nest'
 
     all('label').last.click
 
@@ -97,7 +97,7 @@ feature 'dashboard', js: true do
 
     page.should have_css 'button', text: 'Start'
 
-    click_on 'Move Story'
+    click_on 'Nest'
 
     all('label').last.click
 

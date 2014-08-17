@@ -1,35 +1,35 @@
 .row
   #show_story.large-12.columns
     .row
-      .small-9.columns
+      .large-12.columns
         = simple_form_for @story do |f|
           .row
-            .small-10.columns
+            .large-10.small-9.columns
               = f.input_field :title
 
-            .small-2.columns
+            .large-2.small-3.columns
               = f.submit "Save", class: 'small button radius expand'
-
-      .small-2.columns
+    .row
+      .large-2.small-4.columns.end
         = simple_form_for @story do |f|
           - if @story.started_at.nil?
             = f.hidden_field :started_at, value: Time.new
 
-            %button{ class: 'button small secondary radius' }
+            %button{ class: 'expand button small secondary radius' }
               %i.fa.fa-play
               Start
 
           - elsif @story.finished_at.nil?
             = f.hidden_field :finished_at, value: Time.new
 
-            %button{ class: 'button small secondary radius' }
+            %button{ class: 'expand button small secondary radius' }
               %i.fa.fa-stop
               Finish
 
           - elsif @story.closed_at.nil?
             = f.hidden_field :closed_at, value: Time.new
 
-            %button{ class: 'button small secondary radius' }
+            %button{ class: 'expand button small secondary radius' }
               %i.fa.fa-eject
               Close
 
@@ -40,18 +40,17 @@
 
             = f.hidden_field :closed_at, value: ''
 
-            %button{ class: 'button small secondary radius', title: 'Click to reset status' }
+            %button{ class: 'expand button small secondary radius', title: 'Click to reset status' }
               Closed
 
-      .small-1.columns
+      .large-2.small-4.columns.end
         = link_to @story, class: 'button small alert expand radius', title: 'Delete Story', method: :delete do
           %i.fa.fa-trash-o
 
-    .row
-      .large-12.columns
-        = link_to edit_story_parent_stories_path(@story), class: 'button small radius' do
+      .large-2.small-4.columns.end
+        = link_to edit_story_parent_stories_path(@story), class: 'button small radius expand' do
           %i.fa.fa-arrows
-          Move Story
+          Nest
 
     - if @unstarted_child_story_stories.any?
       %h4
