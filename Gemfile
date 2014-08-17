@@ -6,20 +6,17 @@ gem 'database_cleaner'
 gem 'font-awesome-rails'
 gem 'foundation-rails'
 gem 'haml-rails'
-gem 'hogan_assets'
-gem 'inherited_resources'
 gem 'jbuilder', '~> 1.2'
 gem 'jquery-rails'
-gem 'launchy'
 gem 'pg'
 gem 'rails', '4.0.0'
+gem 'ranked-model'
 gem 'sass-rails', '~> 4.0.0'
 gem 'simple_form'
 gem 'shoulda-matchers'
 gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
 gem 'unicorn'
-gem 'ranked-model'
 
 group :production do
   gem 'rails_12factor'
@@ -31,6 +28,7 @@ group :development, :test do
   gem 'capybara'
   gem 'capybara-webkit'
   gem 'pry'
+  gem 'launchy'
 end
 
 group :doc do
