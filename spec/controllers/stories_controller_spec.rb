@@ -8,7 +8,13 @@ describe StoriesController do
   it { should route(:delete, '/stories/1').to(action: :destroy, id: '1') }
 
   describe '#index' do
-    let(:unblocked_unstarted_stories) { double(order: :'unblocked, unstarted, epic ordered') }
+    let(:unblocked_unstarted_epic_ordered) do
+      double(first: :'unblocked, unstarted, epic ordered first five', count: 9)
+    end
+
+    let(:unblocked_unstarted_stories) do
+      double(order: unblocked_unstarted_epic_ordered)
+    end
 
     before do
       Story.stub(
@@ -23,7 +29,10 @@ describe StoriesController do
     describe 'before filter' do
       before { get(:index) }
 
-      specify { assigns[:unblocked_unstarted_stories].should == :'unblocked, unstarted, epic ordered' }
+      specify { expect(unblocked_unstarted_epic_ordered).to have_received(:first).with(5) }
+      specify { assigns[:unblocked_unstarted_stories].should == unblocked_unstarted_epic_ordered }
+      specify { assigns[:unblocked_unstarted_stories_for_sidebar].should == :'unblocked, unstarted, epic ordered first five' }
+      specify { assigns[:unblocked_unstarted_stories_more_count_for_sidebar].should == 4 }
       specify { assigns[:epic_stories].should == :epic_ordered }
       specify { assigns[:started_stories].should == :started }
       specify { unblocked_unstarted_stories.should have_received(:order).with('min_epic_parent_story_epic_order ASC') }

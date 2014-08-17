@@ -25,6 +25,10 @@ feature 'dashboard', js: true do
     find('#focuses_stories_list')
   end
 
+  def sidebar_ready_to_go_stories_list
+    find('#ready_to_go_stories_list')
+  end
+
   before do
     epic_story.child_stories << middle_story
 
@@ -87,11 +91,8 @@ feature 'dashboard', js: true do
     page.should_not have_css '#show_story .story', text: 'Hello, Globe'
 
     click_on 'Start'
-
     click_on 'Finish'
-
     click_on 'Close'
-
     click_on 'Closed'
 
     page.should have_css 'button', text: 'Start'
@@ -118,6 +119,15 @@ feature 'dashboard', js: true do
 
     page.should have_content %r|\d{1,} Hello, Globe Hello, World \d{1,} Unblocked Story Epic Story \d{1,} Standalone Story|
 
+    create :story, title: 'Clean stuff up'
+    create :story, title: 'Beam stuff up'
+    create :story, title: 'Make soup'
+
     click_on 'Home'
+
+    within(sidebar_ready_to_go_stories_list) do
+      expect(page).not_to have_content 'Make soup'
+      expect(page).to have_content '1 MORE'
+    end
   end
 end

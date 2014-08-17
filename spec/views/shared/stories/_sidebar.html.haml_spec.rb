@@ -12,6 +12,11 @@ describe 'shared/stories/_sidebar.html.haml' do
       any?: false
   end
 
+  let(:unblocked_unstarted_stories_for_sidebar) do
+    double 'unblocked unstarted stories collection for sidebar',
+      any?: false
+  end
+
   let(:epic_stories) do
     double 'epic stories collection',
       any?: false
@@ -23,7 +28,9 @@ describe 'shared/stories/_sidebar.html.haml' do
   end
 
   before do
-    assign :unblocked_unstarted_stories, unblocked_unstarted_stories
+    assign :unblocked_unstarted_stories_for_sidebar, unblocked_unstarted_stories_for_sidebar
+    assign :unblocked_unstarted_stories_more_count_for_sidebar, 9
+    assign :unblocked_unstarted_stories, double(first: unblocked_unstarted_stories)
 
     assign :epic_stories, epic_stories
 
@@ -65,17 +72,17 @@ describe 'shared/stories/_sidebar.html.haml' do
       specify do
         render
 
-        view.should_not have_received(:render_sidebar_index).with('Ready to Go', unblocked_unstarted_stories)
+        view.should_not have_received(:render_sidebar_index).with('Ready to Go', unblocked_unstarted_stories_for_sidebar, more: 9)
       end
     end
 
     context 'when there are unblocked, unstarted stories' do
-      before { unblocked_unstarted_stories.stub(any?: true) }
+      before { unblocked_unstarted_stories_for_sidebar.stub(any?: true) }
 
       specify do
         render
 
-        view.should have_received(:render_sidebar_index).with('Ready to Go', unblocked_unstarted_stories)
+        view.should have_received(:render_sidebar_index).with('Ready to Go', unblocked_unstarted_stories_for_sidebar, more: 9)
       end
     end
 

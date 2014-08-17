@@ -1,4 +1,5 @@
 - epic = local_assigns[:epic].present?
+- more = local_assigns[:more].presence
 %li
   %h2
     = headline
@@ -23,3 +24,7 @@
             = f.submit 'Make First', class: 'hidden'
             = link_to '#', class: 'submitForm' do
               %i.fa.fa-sort-asc
+
+    - if more && more > 0
+      %li.more_note
+        #{more} more

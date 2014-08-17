@@ -10,5 +10,5 @@
     - if @started_stories.any?
       = render_sidebar_index 'In Progress', @started_stories
 
-    - if @unblocked_unstarted_stories.any?
-      = render_sidebar_index 'Ready to Go', @unblocked_unstarted_stories
+    - if @unblocked_unstarted_stories_for_sidebar.any?
+      = render_sidebar_index 'Ready to Go', @unblocked_unstarted_stories_for_sidebar, more: @unblocked_unstarted_stories_more_count_for_sidebar
