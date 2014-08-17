@@ -1,4 +1,8 @@
 class StoryStoriesController < ApplicationController
+  after_filter do
+    UpdateStoriesMinEpicParentStoryEpicOrder.perform
+  end
+
   def create
     story_story = StoryStory.create(permitted_params[:story_story])
 

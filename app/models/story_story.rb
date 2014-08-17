@@ -17,17 +17,6 @@ class StoryStory < ActiveRecord::Base
     true
   end
 
-	after_create do
-		extract_child_stories = -> (story) {
-	   	story.child_stories.inject([ story ]) do |memo, child_story|
-				memo.concat(extract_child_stories.call(child_story))
-			end
-		}
-
-		nested_child_stories = extract_child_stories.call(child_story)
-		nested_child_stories.each(&:update_min_epic_parent_story_epic_order)
-	end
-
   def serializable_hash(options = {})
     options[:include] ||= []
     options[:include] << :parent_story

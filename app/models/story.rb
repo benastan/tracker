@@ -23,25 +23,6 @@ class Story < ActiveRecord::Base
 
   accepts_nested_attributes_for :parent_story_stories, allow_destroy: true
 
-  after_save do
-    if epic? && epic_order_changed?
-
-      # extract_child_stories = -> (story) {
-      #    story.child_stories.inject([ story ]) do |memo, child_story|
-      #     memo.concat(extract_child_stories.call(child_story))
-      #   end
-      # }
-      #
-      # nested_child_stories = child_stories.inject([]) do |memo, child_story|
-      #   memo.concat(extract_child_stories.call(child_story))
-      # end
-
-      # This is terrible!
-      Story.all.each(&:update_min_epic_parent_story_epic_order)
-
-    end
-  end
-
   def self.epic_ordered
     epic.rank(:epic_order).all
   end
@@ -52,14 +33,6 @@ class Story < ActiveRecord::Base
 
   def blocked?
     child_stories.any?
-  end
-
-  def update_min_epic_parent_story_epic_order
-    update!(min_epic_parent_story_epic_order: calculate_min_epic_parent_story_epic_order)
-  end
-
-  def calculate_min_epic_parent_story_epic_order
-    epic_parent_stories.pluck(:epic_order).min
   end
 
   def epic_parent_stories

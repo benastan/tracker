@@ -222,19 +222,24 @@ describe StoriesController do
     end
 
     context 'when epic_order_position changed' do
-      specify do
+      before do
+        allow(UpdateStoriesMinEpicParentStoryEpicOrder).to receive(:perform).and_return(nil)
         story.stub(previous_changes: { epic_order: '1' })
         patch(:update, id: 1, story: { epic_order_position: :first })
-        response.should redirect_to root_path
       end
+
+      specify { expect(response).to redirect_to root_path }
+      specify { expect(UpdateStoriesMinEpicParentStoryEpicOrder).to have_received(:perform) }
     end
 
     context 'when epic_order_position did not change' do
-      specify do
+      before do
+        allow(UpdateStoriesMinEpicParentStoryEpicOrder).to receive(:perform).and_return(nil)
         story.stub(previous_changes: {})
         patch(:update, id: 1, story: { title: 'some title' })
-        response.should redirect_to story
       end
+      specify { expect(response).to redirect_to story }
+      specify { expect(UpdateStoriesMinEpicParentStoryEpicOrder).not_to have_received(:perform) }
     end
   end
 

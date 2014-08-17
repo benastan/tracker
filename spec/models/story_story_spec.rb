@@ -80,21 +80,6 @@ describe StoryStory do
     end
   end
 
-  describe 'after_create hook', simple_story_tree: true do
-    let!(:other_epic_story) { create :story, :epic }
-    let!(:other_middle_story) { other_epic_story.child_stories.first}
-    let!(:other_unblocked_story) { other_middle_story.child_stories.first}
-
-    before { epic_story.update(epic_order_position: :first) }
-
-    specify do
-      expect(->{StoryStory.create(parent_story: epic_story, child_story: other_middle_story)})
-        .to change { other_unblocked_story.reload.min_epic_parent_story_epic_order }
-        .from(other_epic_story.epic_order)
-        .to(epic_story.epic_order)
-    end
-  end
-
   describe 'scopes' do
     let(:started_child) do
       create :story,
