@@ -8,7 +8,6 @@ gem 'foundation-rails'
 gem 'haml-rails'
 gem 'jbuilder', '~> 1.2'
 gem 'jquery-rails'
-gem 'launchy'
 gem 'pg'
 gem 'rails', '4.0.0'
 gem 'ranked-model'
@@ -29,6 +28,7 @@ group :development, :test do
   gem 'capybara'
   gem 'capybara-webkit'
   gem 'pry'
+  gem 'launchy'
 end
 
 group :doc do
