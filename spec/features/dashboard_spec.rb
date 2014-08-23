@@ -5,6 +5,10 @@ feature 'dashboard', js: true do
     create :story, title: 'Epic Story'
   end
 
+  let!(:focus) do
+    create :story, :focus, title: 'Focus Story'
+  end
+
   let(:middle_story) do
     create :story, title: 'Middle Story'
   end
@@ -73,21 +77,27 @@ feature 'dashboard', js: true do
     click_on "Move Story"
     click_on 'Delete Story'
     page.should_not have_content 'Now I have a child!'
-    page.should have_content %r|\d{1,} Unblocked Story Epic Story \d{1,} Hello, Globe Hello, World \d{1,} Standalone Story|
-    within(focuses_stories_list_story(%r|Hello, World|)) do
+    page.should have_content %r|\d{1,} Unblocked Story Epic Story \d{1,} Hello, Globe Hello, World \d{1,} Focus Story \d{1,} Standalone Story|
+    click_on 'Unblocked Story'
+    click_on 'Middle Story'
+    click_on 'Epic Story'
+    check 'Focus'
+    click_on 'Save'
+    click_on 'Home'
+    within(focuses_stories_list_story(%r|Epic Story|)) do
       find('.fa-sort-asc').click
     end
     within(sidebar_focuses_stories_list) do
-      page.should have_content 'Hello, World Epic Story'
+      page.should have_content 'Epic Story Focus Story'
     end
-    page.should have_content %r|\d{1,} Hello, Globe Hello, World \d{1,} Unblocked Story Epic Story \d{1,} Standalone Story|
+    page.should have_content %r|\d{1,} Unblocked Story Epic Story \d{1,} Hello, Globe Hello, World \d{1,} Focus Story \d{1,} Standalone Story|
     create :story, title: 'Clean stuff up'
     create :story, title: 'Beam stuff up'
     create :story, title: 'Make soup'
     click_on 'Home'
     within(sidebar_ready_to_go_stories_list) do
       expect(page).not_to have_content 'Make soup'
-      expect(page).to have_content '1 MORE'
+      expect(page).to have_content '2 MORE'
     end
   end
 end

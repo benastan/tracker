@@ -3,6 +3,7 @@
 FactoryGirl.define do
   factory :story do
     title 'My Story'
+    focus false
 
     ignore do
       parent_story nil
@@ -14,7 +15,12 @@ FactoryGirl.define do
       end
     end
 
+    trait :focus do
+      focus true
+    end
+
     trait :epic do
+
       ignore do
         middle_story { create :story }
         bottom_story { create :story }

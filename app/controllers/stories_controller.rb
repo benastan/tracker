@@ -65,6 +65,7 @@ class StoriesController < ApplicationController
       :finished_at,
       :closed_at,
       :epic_order_position,
+      :focus,
       { parent_story_stories_attributes: [ :parent_story_id ] }
     ]
   end

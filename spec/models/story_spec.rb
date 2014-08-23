@@ -92,15 +92,16 @@ describe Story do
   end
 
   describe '.epic_ordered', simple_story_tree: true do
-    let!(:other_epic_story) { create :story, :epic }
+    let!(:focus_story) { create :story, :focus }
+    let!(:other_focus_story) { create :story, :focus }
 
     describe 'default order' do
-      specify { Story.epic_ordered.should == [ epic_story, other_epic_story ] }
+      specify { Story.epic_ordered.should == [ focus_story, other_focus_story ] }
     end
 
     describe 're-ordered' do
-      before { other_epic_story.update!(epic_order_position: :first) }
-      specify { Story.epic_ordered.should == [ other_epic_story, epic_story ] }
+      before { other_focus_story.update!(epic_order_position: :first) }
+      specify { Story.epic_ordered.should == [ other_focus_story, focus_story ] }
     end
   end
 

@@ -4,10 +4,13 @@
       .large-12.columns
         = simple_form_for @story do |f|
           .row
-            .large-10.small-9.columns
+            .large-8.small-12.columns
               = f.input_field :title
 
-            .large-2.small-3.columns
+            .large-2.small-6.columns
+              = f.input :focus
+
+            .large-2.small-6.columns
               = f.submit "Save", class: 'small button radius expand'
     .row
       .large-2.small-4.columns.end

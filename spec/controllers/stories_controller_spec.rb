@@ -207,6 +207,7 @@ describe StoriesController do
         finished_at: 'left now',
         closed_at: 'down now',
         epic_order_position: :first,
+        focus: '1',
         parent_story_stories_attributes: [
           {
             parent_story_id: '12'
@@ -222,6 +223,7 @@ describe StoriesController do
         'finished_at' => 'left now',
         'closed_at' => 'down now',
         'epic_order_position' => 'first',
+        'focus' => '1',
         'parent_story_stories_attributes' => [
           {
             'parent_story_id' => '12'

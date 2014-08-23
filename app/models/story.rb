@@ -24,7 +24,7 @@ class Story < ActiveRecord::Base
   accepts_nested_attributes_for :parent_story_stories, allow_destroy: true
 
   def self.epic_ordered
-    epic.rank(:epic_order).all
+    where(focus: true).rank(:epic_order).all
   end
 
   def blocking?
