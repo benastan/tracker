@@ -126,7 +126,7 @@ describe Story do
 
     describe '.started' do
       specify do
-        Story.started.should == [ started_story, finished_story, closed_story ]
+        Story.started.should match_array [ started_story, finished_story, closed_story ]
       end
     end
 

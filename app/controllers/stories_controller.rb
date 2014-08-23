@@ -3,8 +3,9 @@ class StoriesController < ApplicationController
 
   before_filter do
     @unblocked_unstarted_stories = Story.unblocked.unstarted.order('min_epic_parent_story_epic_order ASC')
-    @unblocked_unstarted_stories_for_sidebar = @unblocked_unstarted_stories.first(5)
-    @unblocked_unstarted_stories_more_count_for_sidebar = @unblocked_unstarted_stories.count - 5
+    @unblocked_unstarted_stories_for_sidebar = @unblocked_unstarted_stories.order('title ASC').first(5)
+    calculation = @unblocked_unstarted_stories.count - 5
+    @unblocked_unstarted_stories_more_count_for_sidebar = calculation if calculation > 0
     @epic_stories = Story.epic_ordered
     @started_stories = Story.strict_started
   end

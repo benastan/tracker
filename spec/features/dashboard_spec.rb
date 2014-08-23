@@ -96,7 +96,7 @@ feature 'dashboard', js: true do
     create :story, title: 'Make soup'
     click_on 'Home'
     within(sidebar_ready_to_go_stories_list) do
-      expect(page).not_to have_content 'Make soup'
+      expect(page).not_to have_content 'Unblocked Story'
       expect(page).to have_content '2 MORE'
     end
   end
