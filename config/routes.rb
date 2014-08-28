@@ -3,6 +3,7 @@ Tracker::Application.routes.draw do
 
   root to: 'stories#index'
 
+  resource :session, only: :update
   resources :stories, only: [ :new, :create, :show, :destroy, :update ] do
     resources :child_stories, only: [ :new ]
     resource :parent_stories, only: [ :edit ]

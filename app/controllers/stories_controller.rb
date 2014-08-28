@@ -8,6 +8,15 @@ class StoriesController < ApplicationController
     @unblocked_unstarted_stories_more_count_for_sidebar = calculation if calculation > 0
     @epic_stories = Story.epic_ordered
     @started_stories = Story.strict_started
+    @finished_unclosed = Story.where('closed_at IS NULL AND finished_at IS NOT NULL')
+    @recently_closed = Story.where('finished_at IS NOT NULL AND finished_at > (?)', Time.new - 7.days)
+    @finished_last_week = Story.where('finished_at IS NOT NULL AND finished_at > (?) AND finished_at < (?)', Time.new - 14.days, Time.new - 7.days)
+
+    session[:sidebar] ||= {
+      'focuses' => 'true',
+      'in_progress' => 'false',
+      'ready_to_go' => 'false',
+    }
   end
 
   after_filter only: :update do

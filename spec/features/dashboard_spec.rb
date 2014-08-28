@@ -1,26 +1,16 @@
 require 'spec_helper'
 
 feature 'dashboard', js: true do
-  let(:epic_story) do
-    create :story, title: 'Epic Story'
-  end
+  let(:epic_story) { create :story, title: 'Epic Story' }
+  let!(:focus) { create :story, :focus, title: 'Focus Story' }
+  let(:middle_story) { create :story, title: 'Middle Story' }
+  let(:unblocked_story) { create :story, title: 'Unblocked Story' }
+  let!(:standalone_story) { create :story, title: 'Standalone Story' }
 
-  let!(:focus) do
-    create :story, :focus, title: 'Focus Story'
+  def stories_sidebar
+    find('#stories_sidebar')
   end
-
-  let(:middle_story) do
-    create :story, title: 'Middle Story'
-  end
-
-  let(:unblocked_story) do
-    create :story, title: 'Unblocked Story'
-  end
-
-  let!(:standalone_story) do
-    create :story, title: 'Standalone Story'
-  end
-
+  
   def focuses_stories_list_story(story_name)
     find('#focuses_stories_list .story', text: story_name)
   end
@@ -31,6 +21,12 @@ feature 'dashboard', js: true do
 
   def sidebar_ready_to_go_stories_list
     find('#ready_to_go_stories_list')
+  end
+
+  def click_sidebar_header(text)
+    within stories_sidebar do
+      find('label', text: text).click
+    end
   end
 
   before do
@@ -48,6 +44,8 @@ feature 'dashboard', js: true do
     fill_in 'story_title', with: 'Give me a child'
     click_on 'Create Story'
     parent_story = Story.last
+    click_sidebar_header /ready to go/i
+    sleep 1
     click_on 'Hello, World'
     fill_in 'story_story_child_story_attributes_title', with: 'Hello, Globe'
     click_on 'Create Story'
@@ -84,10 +82,10 @@ feature 'dashboard', js: true do
     check 'Focus'
     click_on 'Save'
     click_on 'Home'
-    within(focuses_stories_list_story(%r|Epic Story|)) do
+    within focuses_stories_list_story(%r|Epic Story|) do
       find('.fa-sort-asc').click
     end
-    within(sidebar_focuses_stories_list) do
+    within sidebar_focuses_stories_list do
       page.should have_content 'Epic Story Focus Story'
     end
     page.should have_content %r|\d{1,} Unblocked Story Epic Story \d{1,} Hello, Globe Hello, World \d{1,} Focus Story \d{1,} Standalone Story|
@@ -95,8 +93,8 @@ feature 'dashboard', js: true do
     create :story, title: 'Beam stuff up'
     create :story, title: 'Make soup'
     click_on 'Home'
-    within(sidebar_ready_to_go_stories_list) do
-      expect(page).not_to have_content 'Unblocked Story'
+    within sidebar_ready_to_go_stories_list do
+      expect(page).to_not have_content 'Unblocked Story'
       expect(page).to have_content '2 MORE'
     end
   end

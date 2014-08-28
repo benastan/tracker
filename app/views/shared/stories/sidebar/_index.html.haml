@@ -2,9 +2,13 @@
 - more = local_assigns[:more].presence
 %li
   %h2
-    = headline
+    - session_param = headline.downcase.gsub(' ', '_')
+    = form_tag :session, remote: true, method: :patch do |f|
+      = hidden_field_tag :"sidebar[#{session_param}]", 'false', id: "sidebar_#{session_param}_false"
+      = check_box_tag :"sidebar[#{session_param}]", 'true', session[:sidebar][session_param] == 'true', id: "sidebar_#{session_param}_true"
+      = label_tag :"sidebar_#{session_param}_true", headline
 
-  %ul{ id: "#{headline.parameterize.underscore}_stories_list" }
+  %ul{ id: "#{headline.parameterize.underscore}_stories_list", class: "#{'hide' if session[:sidebar][session_param] != 'true'}" }
 
     - stories.each do |story|
 
@@ -18,6 +22,9 @@
               %i.fa.fa-circle.green
 
             = story.title
+
+            - if story.finished_at.present?
+              %div.finished_at finished #{time_ago_in_words(story.finished_at)} ago
 
           - if epic
             = f.hidden_field :epic_order_position, value: :first

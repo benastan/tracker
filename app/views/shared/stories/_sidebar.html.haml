@@ -12,3 +12,12 @@
 
     - if @unblocked_unstarted_stories_for_sidebar.any?
       = render_sidebar_index 'Ready to Go', @unblocked_unstarted_stories_for_sidebar, more: @unblocked_unstarted_stories_more_count_for_sidebar
+
+    - if @recently_closed.any?
+      = render_sidebar_index 'Recently Finished', @recently_closed
+    
+    - if @finished_last_week.any?
+      = render_sidebar_index 'Finished Last Week', @finished_last_week
+    
+    - if @finished_unclosed.any?
+      = render_sidebar_index 'Finished and Unclosed', @finished_unclosed
