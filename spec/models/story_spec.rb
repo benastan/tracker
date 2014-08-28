@@ -84,11 +84,11 @@ describe Story do
   end
 
   describe '.unblocked', simple_story_tree: true do
-    specify { Story.unblocked.should =~ [ unblocked_story, standalone_story ] }
+    specify { Story.unblocked.should match_array [ unblocked_story, standalone_story ] }
   end
 
   describe '.epic', simple_story_tree: true do
-    specify { Story.epic.should =~ [ epic_story ] }
+    specify { Story.epic.should match_array [ epic_story ] }
   end
 
   describe '.epic_ordered', simple_story_tree: true do
